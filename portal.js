@@ -1,5 +1,5 @@
 // Member portal data. All fictional.
-const ME={biz:"Harbor & Vine Catering",owner:"Danielle",city:"Richmond, VA",via:"Union Kitchen Accelerator",viaSrc:"RVA",stage:"Growth (3 yrs, 6 employees)",market:"Mid-Atlantic"};
+const ME={biz:"Harbor & Vine Catering",owner:"Danielle",city:"Richmond, VA",via:"Union Kitchen Accelerator",viaSrc:"RVA",stage:"Growth (3 yrs, 6 employees)",market:"South Atlantic"};
 const TOPICS=["Using AI in your business","Building financial statements","Managing business credit accounts","Taking on a business loan","10 weeks of strategy support","Applying for grants & funding","Cash flow","Pricing","Marketing & digital presence","Cybersecurity","Legal basics","Hiring","Building business credit"];
 const SMARKETS=["Virginia","Texas","Greater Washington"];
 const SESSIONS=[
@@ -14,27 +14,27 @@ const SESSIONS=[
 const VOLS=[["Elena R.","Finance · statements & cash flow"],["Priya N.","Data Science · AI tools"],["Devon L.","Small Business Bank · credit"],["Alexis M.","Marketing · digital presence"],["Chris W.","Cyber · fraud prevention"]];
 const GRANTS=[
 {l:"img/logos/aeo.png",n:"Business Grant Program for Black-Owned Businesses (with AEO)",a:"$10,000",m:"National",who:"Black-owned, 2+ yrs operating, revenue up to $1M",type:"Grant",src:"SMB",note:"2025 round: 120 grants"},
-{l:"img/logos/dec.png",n:"The DEC Network Accelerator awards",a:"$2,000–$15,000",m:"South & Gulf Coast",who:"Dallas founders in the 12-week cohort",type:"Grant",src:"ACC"},
-{w:"Union Kitchen",n:"Union Kitchen angel-network intro",a:"Investor intro (no grant)",m:"Mid-Atlantic",who:"Accelerator food & beverage brands that hit sales and margin targets",type:"Investor intro",src:"RVA"},
-{l:"img/logos/houston.svg",n:"Liftoff Houston seed prizes",a:"$30,000+ across winners",m:"South & Gulf Coast",who:"Houston startups, business plan competition",type:"Competition",src:"SMB"},
+{l:"img/logos/dec.png",n:"The DEC Network Accelerator awards",a:"$2,000–$15,000",m:"West South Central",who:"Dallas founders in the 12-week cohort",type:"Grant",src:"ACC"},
+{w:"Union Kitchen",n:"Union Kitchen angel-network intro",a:"Investor intro (no grant)",m:"South Atlantic",who:"Accelerator food & beverage brands that hit sales and margin targets",type:"Investor intro",src:"RVA"},
+{l:"img/logos/houston.svg",n:"Liftoff Houston seed prizes",a:"$30,000+ across winners",m:"West South Central",who:"Houston startups, business plan competition",type:"Competition",src:"SMB"},
 {w:"SOAR",n:"SOAR Fund CDFI lending",a:"Loan via local CDFI",m:"National",who:"SMBs in 15 southern states + DC",type:"Loan",src:"SMB"},
-{w:"DMS",n:"Delaware Main Street Micro-grant",a:"$5,000",m:"Mid-Atlantic",who:"Wilmington storefronts, under 10 staff",type:"Grant",S:1},
+{w:"DMS",n:"Delaware Main Street Micro-grant",a:"$5,000",m:"South Atlantic",who:"Wilmington storefronts, under 10 staff",type:"Grant",S:1},
 {w:"WFG",n:"Women Founders Growth Fund",a:"$25,000",m:"National",who:"Women-owned, $100K–$2M revenue",type:"Grant",S:1},
-{w:"DDU",n:"Dallas Digital Upgrade Grant",a:"$3,500",m:"South & Gulf Coast",who:"Retail & service SMBs going online",type:"Grant",S:1},
-{w:"RKF",n:"Richmond Kitchen Equipment Fund",a:"$7,500",m:"Mid-Atlantic",who:"Food businesses, 1+ yr operating",type:"Grant",S:1}];
+{w:"DDU",n:"Dallas Digital Upgrade Grant",a:"$3,500",m:"West South Central",who:"Retail & service SMBs going online",type:"Grant",S:1},
+{w:"RKF",n:"Richmond Kitchen Equipment Fund",a:"$7,500",m:"South Atlantic",who:"Food businesses, 1+ yr operating",type:"Grant",S:1}];
 const ACCS=[
-{n:"The DEC Network",l:"img/logos/dec.png",org:"Dallas Small Business Accelerator, with UT Dallas",m:"South & Gulf Coast",st:"Early stage",len:"12 weeks",src:"ACC",u:"https://thedec.co/"},
-{n:"UT Dallas Innovation & Entrepreneurship",l:"img/logos/utd.svg",org:"CometX Accelerator, Richardson, TX",m:"South & Gulf Coast",st:"Idea / early stage",len:"University accelerator",u:"https://innovation.utdallas.edu/cometx-accelerator/"},
-{n:"Union Kitchen Accelerator",w:"Union Kitchen",org:"Union Kitchen, Washington, DC",m:"Mid-Atlantic",st:"Early",len:"180 days, in person, rolling admission",src:"RVA"},
-{n:"Halcyon",l:"img/logos/halcyon.png",org:"Impact-driven startup accelerator, Washington, DC",m:"Mid-Atlantic",st:"Early stage",len:"Programs since 2014",u:"https://halcyonaccelerator.org/programs/"},
-{n:"Propeller",w:"PROP",org:"Impact Accelerator, New Orleans, LA",m:"South & Gulf Coast",st:"Early stage",len:"Cohort accelerator",u:"https://gopropeller.org/impact-accelerator/"},
-{n:"Rising Tide Capital",w:"RTC",org:"Community Business Academy, Jersey City, NJ",m:"Northeast",st:"Idea / early stage",len:"Business training + coaching",u:"https://programs.risingtidecapital.org/community-business-academy/"},
-{n:"Hot Bread Kitchen",w:"HBK",org:"HBK Incubates, New York, NY",m:"Northeast",st:"Early stage",len:"Food business incubator",u:"https://hotbreadkitchen.org/hbki/"},
-{n:"1871",w:"1871",org:"Innovation hub, Chicago, IL",m:"Midwest",st:"Early stage",len:"Cohort programs",u:"https://1871.com/"},
-{n:"gener8tor",w:"g8",org:"gBETA Milwaukee, Milwaukee, WI",m:"Midwest",st:"Idea / early stage",len:"Free pre-accelerator",u:"https://www.gener8tor.com/gbeta/milwaukee"},
-{n:"LearnLaunch",l:"img/logos/learnlaunch.svg",org:"LearnLaunch Accelerator, Boston, MA",m:"Northeast",st:"Pre-seed",len:"Accelerator + pre-seed fund",u:"https://learnlaunch.com/"},
-{n:"La Cocina",w:"LC",org:"Food business incubator, San Francisco, CA",m:"West Coast",st:"Idea / early stage",len:"Kitchen incubator",u:"https://www.lacocinasf.org/"},
-{n:"Boomtown",w:"BOOM",org:"Boomtown Accelerator, Boulder, CO",m:"Mountain West",st:"Early stage",len:"Startup accelerator",u:"https://boomtownaccelerators.com/"}];
+{n:"The DEC Network",l:"img/logos/dec.png",org:"Dallas Small Business Accelerator, with UT Dallas",m:"West South Central",st:"Early stage",len:"12 weeks",src:"ACC",u:"https://thedec.co/"},
+{n:"UT Dallas Innovation & Entrepreneurship",l:"img/logos/utd.svg",org:"CometX Accelerator, Richardson, TX",m:"West South Central",st:"Idea / early stage",len:"University accelerator",u:"https://innovation.utdallas.edu/cometx-accelerator/"},
+{n:"Union Kitchen Accelerator",w:"Union Kitchen",org:"Union Kitchen, Washington, DC",m:"South Atlantic",st:"Early",len:"180 days, in person, rolling admission",src:"RVA"},
+{n:"Halcyon",l:"img/logos/halcyon.png",org:"Impact-driven startup accelerator, Washington, DC",m:"South Atlantic",st:"Early stage",len:"Programs since 2014",u:"https://halcyonaccelerator.org/programs/"},
+{n:"Propeller",w:"PROP",org:"Impact Accelerator, New Orleans, LA",m:"West South Central",st:"Early stage",len:"Cohort accelerator",u:"https://gopropeller.org/impact-accelerator/"},
+{n:"Rising Tide Capital",w:"RTC",org:"Community Business Academy, Jersey City, NJ",m:"Middle Atlantic",st:"Idea / early stage",len:"Business training + coaching",u:"https://programs.risingtidecapital.org/community-business-academy/"},
+{n:"Hot Bread Kitchen",w:"HBK",org:"HBK Incubates, New York, NY",m:"Middle Atlantic",st:"Early stage",len:"Food business incubator",u:"https://hotbreadkitchen.org/hbki/"},
+{n:"1871",w:"1871",org:"Innovation hub, Chicago, IL",m:"East North Central",st:"Early stage",len:"Cohort programs",u:"https://1871.com/"},
+{n:"gener8tor",w:"g8",org:"gBETA Milwaukee, Milwaukee, WI",m:"East North Central",st:"Idea / early stage",len:"Free pre-accelerator",u:"https://www.gener8tor.com/gbeta/milwaukee"},
+{n:"LearnLaunch",l:"img/logos/learnlaunch.svg",org:"LearnLaunch Accelerator, Boston, MA",m:"New England",st:"Pre-seed",len:"Accelerator + pre-seed fund",u:"https://learnlaunch.com/"},
+{n:"La Cocina",w:"LC",org:"Food business incubator, San Francisco, CA",m:"Pacific",st:"Idea / early stage",len:"Kitchen incubator",u:"https://www.lacocinasf.org/"},
+{n:"Boomtown",w:"BOOM",org:"Boomtown Accelerator, Boulder, CO",m:"Mountain",st:"Early stage",len:"Startup accelerator",u:"https://boomtownaccelerators.com/"}];
 const PERKS=[
 {n:"Claude or Gemini AI",l:"img/logos/claude.svg",o:"Member discount on AI assistant access for your team",c:"AI"},
 {n:"Google Workspace",l:"img/logos/gworkspace.svg",o:"Member discount on business email, Docs and Drive",c:"Productivity"},
