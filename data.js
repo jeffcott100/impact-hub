@@ -2,12 +2,13 @@
 const REGIONS=["South Atlantic", "Middle Atlantic", "Pacific", "East North Central", "West South Central", "Mountain", "New England", "West North Central", "East South Central"];
 // Capital deployed by Census division, Jul-Dec 2025 (Community Benefits Plan interim report). [division, total deployed, community development-related]
 const REGION_DEPLOYED=[["South Atlantic",10003422544,1337761781],["Middle Atlantic",6240180876,930578927],["Pacific",5905268238,747818421],["East North Central",5767387873,450185361],["West South Central",5446895668,877426984],["Mountain",2793033997,181472032],["New England",2564231334,337072848],["West North Central",2488258129,145242352],["East South Central",1893553302,99626433],["National / U.S. territories",65687471,1000000]];
+REGIONS.sort();
 const MARKETS=REGIONS;
 // Partner programs, titled by the partner organization.
 const PROGRAMS=[
 {n:"The DEC Network",p:"Dallas Small Business Accelerator (with UT Dallas)",r:"West South Central",c:"Dallas, TX",t:"Accelerator",st:"Early stage",d:"12-week intensive: curriculum, growth consulting and a pitch at Dallas Startup Week. Cohort grants of $15,000 / $10,000 / $2,000.",u:"https://thedec.co/",img:"img/pp1.jpg"},
 {n:"UT Dallas Innovation & Entrepreneurship",p:"CometX Accelerator",r:"West South Central",c:"Richardson, TX",t:"Accelerator",st:"Idea / early stage",d:"Venture development, mentors and workspace for student and community founders.",u:"https://innovation.utdallas.edu/",img:"img/p-utd.jpg"},
-{n:"Union Kitchen Accelerator",p:"Union Kitchen",r:"South Atlantic",c:"Washington, DC",t:"Accelerator",st:"Early",d:"180-day food & beverage accelerator: product, pricing and packaging built in their own facility, first production run, local store launch, then warm distributor and angel-network intros.",img:"img/pp2.jpg"},
+{n:"Union Kitchen Accelerator",p:"Union Kitchen",r:"South Atlantic",c:"Washington, DC",t:"Accelerator",st:"Early stage",d:"180-day food & beverage accelerator: product, pricing and packaging built in their own facility, first production run, local store launch, then warm distributor and angel-network intros.",img:"img/pp2.jpg"},
 {n:"Halcyon",p:"Halcyon Incubator",r:"South Atlantic",c:"Washington, DC",t:"Incubator",st:"Early stage",d:"Residential and virtual programs for early-stage, impact-driven founders in climate, health and equity tech.",u:"https://halcyonaccelerator.org/programs/",img:"img/pp4.jpg"},
 {n:"Propeller",p:"Impact Accelerator",r:"West South Central",c:"New Orleans, LA",t:"Accelerator",st:"Early stage",d:"Accelerator and coworking for New Orleans founders tackling social and environmental problems.",u:"https://gopropeller.org/impact-accelerator/",img:"img/p-propeller.jpg"},
 {n:"Rising Tide Capital",p:"Community Business Academy",r:"Middle Atlantic",c:"Jersey City, NJ",t:"Incubator",st:"Idea / early stage",d:"Business training and coaching for entrepreneurs in under-resourced communities.",u:"https://programs.risingtidecapital.org/community-business-academy/",img:"img/p-risingtide.jpg"},
@@ -17,6 +18,9 @@ const PROGRAMS=[
 {n:"LearnLaunch",p:"LearnLaunch Accelerator",r:"New England",c:"Boston, MA",t:"Accelerator",st:"Pre-seed",d:"Accelerator and pre-seed fund for education and workforce startups.",u:"https://learnlaunch.com/",img:"img/p-learnlaunch.jpg"},
 {n:"La Cocina",p:"Food business incubator",r:"Pacific",c:"San Francisco, CA",t:"Incubator",st:"Idea / early stage",d:"Commercial kitchen space, technical assistance and market access for low-income food entrepreneurs.",u:"https://www.lacocinasf.org/",img:"img/p-wbenc.jpg"},
 {n:"Boomtown",p:"Boomtown Accelerator",r:"Mountain",c:"Boulder, CO",t:"Accelerator",st:"Early stage",d:"Boulder-based accelerator pairing startups with mentors, corporate partners and investors.",u:"https://boomtownaccelerators.com/",img:"img/p-zip.jpg"}];
+PROGRAMS.sort((a,b)=>a.n.localeCompare(b.n));
+const ST_ABBR={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming"};
+PROGRAMS.forEach(p=>p.s=ST_ABBR[p.c.split(", ").pop()]);
 function S(){return ''}
 function srcLink(k){return ""}
 function filters(el,onPick,list=MARKETS){let cur="All";el.innerHTML=["All",...list].map(m=>`<button class="${m=="All"?"on":""}">${m}</button>`).join("");

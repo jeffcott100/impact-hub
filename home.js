@@ -1,7 +1,7 @@
 // Map dots. Organizations are real; amounts on newer entries are illustrative placeholders. 100th Street Bank is fictional.
 const MAP_REGIONS=REGIONS;
 const REGION_STATES={"New York":"New York & New Jersey","New Jersey":"New York & New Jersey","Connecticut":"New York & New Jersey","District of Columbia":"Greater Washington","Maryland":"Greater Washington","Virginia":"Virginia","Delaware":"Delaware","Louisiana":"Louisiana","Texas":"Texas","Illinois":"Illinois & Midwest"};
-const CATS=["Racial Equity","Affordable Housing","Small Business Support","Workforce Development","Financial Well-Being"];
+const CATS=["Affordable Housing","Financial Well-Being","Racial Equity","Small Business Support","Workforce Development"];
 const DOTS=[
 // Texas
 {o:"The DEC Network + UT Dallas Accelerator",c:"Dallas",m:"Texas",k:"Small Business",p:"12-week accelerator, 12 founders",a:45000},
@@ -165,7 +165,7 @@ function drawMap(){
    c.addEventListener("mouseenter",show);c.addEventListener("focus",show);c.addEventListener("click",e=>{e.stopPropagation();show()})});}
  const pt=e=>{const b=svg.getBoundingClientRect();return[V.x+(e.clientX-b.left)/b.width*V.w,V.y+(e.clientY-b.top)/b.height*V.w*H/W]};
  const zoomAt=(f,cx,cy)=>{const w=V.w/f;setV(cx-(cx-V.x)/f,cy-(cy-V.y)/f,w)};
- svg.addEventListener("wheel",e=>{e.preventDefault();tip.style.display="none";const [x,y]=pt(e);zoomAt(e.deltaY<0?1.35:1/1.35,x,y)},{passive:false});
+ let hintT;const mw=svg.parentNode;svg.addEventListener("wheel",e=>{if(!(e.ctrlKey||e.metaKey)){mw.classList.add("showhint");clearTimeout(hintT);hintT=setTimeout(()=>mw.classList.remove("showhint"),1200);return}e.preventDefault();tip.style.display="none";const [x,y]=pt(e);zoomAt(e.deltaY<0?1.15:1/1.15,x,y)},{passive:false});
  let drag=null;svg.addEventListener("pointerdown",e=>{if(zoom()>1.01)drag=[e.clientX,e.clientY,V.x,V.y]});window.addEventListener("pointerup",()=>drag=null);
  svg.addEventListener("pointermove",e=>{if(!drag)return;const b=svg.getBoundingClientRect(),k=V.w/b.width;setV(drag[2]-(e.clientX-drag[0])*k,drag[3]-(e.clientY-drag[1])*k,V.w)});
  const zc=document.getElementById("mapzoom");zc.innerHTML=`<button aria-label="Zoom in">+</button><button aria-label="Zoom out">−</button><button aria-label="Reset">⟲</button>`;
@@ -176,18 +176,19 @@ function drawMap(){
 }
 // Testimonials: illustrative composites. Names are invented; quotes adapted from public community impact reporting.
 const TESTI=[
-{"n": "", "b": "CEO, nonprofit CDFI partner", "q": "We meet talented entrepreneurs every day with a clear vision for their business. What’s often missing isn’t ambition, it’s someone willing to believe in that vision and back it with the right capital and support. 100th Street Bank’s support helps us look beyond a credit score and stand alongside the people behind small businesses, moving them, their families and their communities toward financial ascension.", "x": 1},
 {n:"Marcus Bell",b:"Co-owner, neighborhood restaurant · Union Kitchen Accelerator, DC",q:"We walked in with a family recipe and walked out with a priced, packaged product on real shelves, and people who actually knew how to get it there.",i:"img/t1.jpg"},
-{n:"Lucía Ortega",b:"Founder, translation services firm · Supplier mentorship, Richmond",q:"Asking for help takes courage, but a good mentor helps you see your business in a whole new way.",i:"img/t2.jpg"},
-{"n": "", "b": "CDFI partner · Deep South", "q": "Having a working vehicle is a key to livelihood in Deep South communities. More than just a ride to work, this is essential for entrepreneurs, providing a pathway to better jobs and broader opportunities.", "x": 1}];
-const TLOGO=[{},{w:"Union Kitchen",t:"Food & beverage accelerator"},{w:"100th Street Bank",t:"Supplier mentorship"},{l:"img/logos/dec.png",t:"The DEC Network"},{l:"img/logos/everyoneon.png",t:"Everyone On"},{l:"img/logos/ala.svg",t:"Public libraries"},{l:"img/logos/robinhood.gif",t:"Robin Hood"}];
+{n:"Lucía Ortega",b:"Founder, translation services firm · Supplier mentorship, Richmond",q:"Asking for help takes courage, but a good mentor helps you see your business in a whole new way.",i:"img/t2.jpg"}];
+const TLOGO=[{w:"Union Kitchen",t:"Food & beverage accelerator"},{w:"100th Street Bank",t:"Supplier mentorship"},{l:"img/logos/dec.png",t:"The DEC Network"},{l:"img/logos/everyoneon.png",t:"Everyone On"},{l:"img/logos/ala.svg",t:"Public libraries"},{l:"img/logos/robinhood.gif",t:"Robin Hood"}];
 function renderTesti(el,list=TESTI){const lg=i=>{const L=TLOGO[i]||{};return L.l?`<img class="vlogo" src="${L.l}" alt="${L.t}">`:`<span class="vlogo vwm">${L.w||""}</span>`};
  el.innerHTML=list.map((t,i)=>`<figure class="vcard${t.x?" noph":""}" tabindex="0" data-i="${i}">${t.x?"":`<img class="vph" src="${t.i}" alt="">`}<div class="vbody"><span class="vq">“</span><blockquote>${t.q}</blockquote><figcaption><span>${t.n?`<b>${t.n}</b>`:""}<small>${t.b}</small></span>${t.x?"":lg(i)}</figcaption><span class="vmore">Read their story →</span></div></figure>`).join("");
  const dots=document.getElementById("vdots");dots.innerHTML=list.map((_,i)=>`<button aria-label="Story ${i+1}" class="${i?"":"on"}"></button>`).join("");
- const step=()=>el.querySelector(".vcard").offsetWidth+24,go=d=>el.scrollBy({left:d*step(),behavior:"smooth"});
+ const n=list.length,step=()=>el.querySelector(".vcard").offsetWidth+24,cur=()=>Math.round(el.scrollLeft/step()),to=i=>el.scrollTo({left:((i%n)+n)%n*step(),behavior:"smooth"}),go=d=>to(cur()+d);
  document.getElementById("vprev").onclick=()=>go(-1);document.getElementById("vnext").onclick=()=>go(1);
- dots.querySelectorAll("button").forEach((b,i)=>b.onclick=()=>el.scrollTo({left:i*step(),behavior:"smooth"}));
- el.addEventListener("scroll",()=>{const k=Math.round(el.scrollLeft/step());dots.querySelectorAll("button").forEach((b,i)=>b.classList.toggle("on",i==k))});
- let sx=null;el.addEventListener("pointerdown",e=>{sx=e.clientX});el.addEventListener("pointerup",e=>{if(sx!=null&&Math.abs(e.clientX-sx)>40)go(e.clientX<sx?1:-1);sx=null});
+ dots.querySelectorAll("button").forEach((b,i)=>b.onclick=()=>to(i));
+ el.addEventListener("scroll",()=>{const k=cur();dots.querySelectorAll("button").forEach((b,i)=>b.classList.toggle("on",i==k))});
+ let sx=null,sl=0;const ds=x=>{sx=x;sl=el.scrollLeft},de=x=>{if(sx==null)return;const dx=x-sx;sx=null;if(Math.abs(dx)<40)return;const atEnd=el.scrollLeft>=el.scrollWidth-el.clientWidth-4&&sl>=el.scrollWidth-el.clientWidth-4,atStart=el.scrollLeft<=4&&sl<=4;
+  if(dx<0&&atEnd)to(0);else if(dx>0&&atStart)to(n-1);else if(Math.abs(el.scrollLeft-sl)<10)go(dx<0?1:-1)};
+ el.addEventListener("pointerdown",e=>{if(e.pointerType=="mouse")ds(e.clientX)});el.addEventListener("pointerup",e=>{if(e.pointerType=="mouse")de(e.clientX)});
+ el.addEventListener("touchstart",e=>ds(e.touches[0].clientX),{passive:true});el.addEventListener("touchend",e=>de(e.changedTouches[0].clientX));
  el.querySelectorAll(".vcard").forEach(c=>c.onclick=()=>{const t=list[c.dataset.i];let m=document.getElementById("vmdl");if(!m){m=document.createElement("div");m.id="vmdl";m.className="vmodal";m.onclick=e=>{if(e.target==m||e.target.classList.contains("vx"))m.style.display="none"};document.body.append(m)}
   m.innerHTML=`<div><button class="vx" aria-label="Close">×</button>${t.x?"":`<img src="${t.i}" alt="">`}<div><span class="vq">“</span><blockquote>${t.q}</blockquote><p>${t.n?`<b>${t.n}</b><br>`:""}<small>${t.b}</small></p><p class="mut">${t.x?"From the Community Benefits Plan interim progress report, Jul–Dec 2025.":"Full story coming soon. (Prototype: illustrative composite.)"}</p></div></div>`;m.style.display="grid"})}

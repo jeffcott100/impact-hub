@@ -1,7 +1,7 @@
 // Member portal data. All fictional.
 const ME={biz:"Harbor & Vine Catering",owner:"Danielle",city:"Richmond, VA",via:"Union Kitchen Accelerator",viaSrc:"RVA",stage:"Growth (3 yrs, 6 employees)",market:"South Atlantic"};
 const TOPICS=["Using AI in your business","Building financial statements","Managing business credit accounts","Taking on a business loan","10 weeks of strategy support","Applying for grants & funding","Cash flow","Pricing","Marketing & digital presence","Cybersecurity","Legal basics","Hiring","Building business credit"];
-const SMARKETS=["Virginia","Texas","Greater Washington"];
+const SMARKETS=["Greater Washington","Texas","Virginia"];
 const SESSIONS=[
 ["s1","Using AI in your business","AI for small business","2026-10-28","12:00","","Workshop","Priya N., Data Science",1,1],
 ["s3","Building financial statements","Financial statements 101","2026-11-04","13:00","","Workshop","Elena R., Finance",0,1],

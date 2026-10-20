@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=3"></head>
-<body class="app"><script src="data.js"></script><script src="portal.js"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=4"></head>
+<body class="app"><script src="data.js?v=4"></script><script src="portal.js?v=4"></script><main class="wrap">
 <div class="welcome"><h1 id="wh"></h1><p id="wp"></p></div>
 <h3 style="margin:0 0 8px">Your profile</h3><div class="profile" id="pf"></div>
 <div class="two"><div>
@@ -21,4 +21,4 @@ rg.innerHTML=GRANTS.filter(g=>g.m==ME.market||g.m=="National").slice(0,3).map(g=
 pk.innerHTML=PERKS.filter(p=>!p.bank).slice(0,4).map(p=>`<div class="row perk">${plogo(p)}<div><b>${p.n}</b><small>${p.o}</small></div></div>`).join("");
 pf.innerHTML=[["Business",ME.biz],["Owner",ME.owner+" Price"],["Location",ME.city],["Region",ME.market],["Volunteer hours received","14"]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")+`<a class="btn sm ghost" href="#" style="margin-left:auto">Edit profile</a>`;
 </script>
-</main><script src="chrome.js"></script></body></html>
+</main><script src="chrome.js?v=4"></script></body></html>

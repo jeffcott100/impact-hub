@@ -1,12 +1,12 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=3"></head>
-<body class="app"><script src="data.js"></script><script src="portal.js"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=4"></head>
+<body class="app"><script src="data.js?v=4"></script><script src="portal.js?v=4"></script><main class="wrap">
 <div class="pagehead"><div><h1>Workshops &amp; sessions</h1><p>Led by 100th Street Bank associate volunteers. Free for members.</p></div><button class="btn" onclick="book()">Book 1:1 office hours</button></div>
 <div class="fbar"><select id="ft"></select><select id="ff"></select><div class="tabs" style="margin:0"><button class="on" id="vl">List</button><button id="vc">Calendar</button></div></div>
 <div id="out"></div>
 <script>
 document.querySelector(".pagehead p").innerHTML=`Led by 100th Street Bank associate volunteers. Free for members.`;
-const kw=searchBox(document.querySelector(".fbar"),"Search sessions and programs");kw.oninput=ren;opts(ft,"Topic",TOPICS);opts(ff,"Format",["Workshop","Webinar","Clinic","Program"]);let view="list";
+const kw=searchBox(document.querySelector(".fbar"),"Search sessions and programs");kw.oninput=ren;opts(ft,"Topic",TOPICS);opts(ff,"Format",["Clinic","Program","Webinar","Workshop"]);let view="list";
 vl.onclick=()=>{view="list";vl.classList.add("on");vc.classList.remove("on");ren()};vc.onclick=()=>{view="cal";vc.classList.add("on");vl.classList.remove("on");ren()};
 [ft,ff].forEach(s=>s.onchange=ren);
 function btn(s){if(s.apply){const r=regd().includes(s.id);return `<button class="btn sm ${r?"done":""}" onclick="toggleReg('${s.id}');ren()">${r?"Requested ✓":"Request a spot"}</button>`}const r=regd().includes(s.id);return `<button class="btn sm ${r?"done":""}" onclick="toggleReg('${s.id}');ren()">${r?"Registered ✓":"Register"}</button>`}
@@ -19,4 +19,4 @@ ren();
 function book(){const m=modal(`<h3>Book 1:1 office hours</h3><p class="mut">30 minutes with a 100th Street Bank volunteer ${S()}</p><form class="f" id="bf"><label>Topic<select>${TOPICS.map(t=>`<option>${t}</option>`).join("")}</select></label><label>Date<input type="date" required value="2026-11-05"></label><label>What do you want help with?<textarea rows="3"></textarea></label><button class="btn">Request time</button></form><div class="ok"><b>Requested.</b> We'll confirm by email. (Prototype: nothing was sent.)</div>`);
 bf.onsubmit=e=>{e.preventDefault();bf.style.display="none";bf.nextElementSibling.style.display="block"}}
 </script>
-</main><script src="chrome.js"></script></body></html>
+</main><script src="chrome.js?v=4"></script></body></html>

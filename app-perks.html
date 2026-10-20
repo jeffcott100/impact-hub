@@ -1,8 +1,8 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Perks · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=3"></head>
-<body class="app"><script src="data.js"></script><script src="portal.js"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Perks · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=4"></head>
+<body class="app"><script src="data.js?v=4"></script><script src="portal.js?v=4"></script><main class="wrap">
 <div class="pagehead"><div><h1>Member perks</h1><p>Partner discounts arranged by 100th Street Bank for Hub members. Discount terms are set at sign-up; no rates shown.</p></div></div>
 <div class="grid" id="out"></div>
 <script>function ren(){const c=LS.get("claimed",[]);out.innerHTML=PERKS.map(p=>`<div class="card"><div class="perk">${plogo(p)}<div><span class="tag">${p.c}</span><h3 style="margin:4px 0 0">${p.n}</h3></div></div><p>${p.o}</p><div class="foot">${p.bank?`<a class="btn sm" href="${p.u}" target="_blank" rel="noopener">Learn more</a>`:c.includes(p.n)?`<span class="tag">Claimed · code IH-${p.n.replace(/\W/g,"").slice(0,6).toUpperCase()}26</span>`:`<button class="btn sm" onclick="cl('${p.n}')">Claim</button>`}</div></div>`).join("")}
 function cl(n){LS.set("claimed",[...LS.get("claimed",[]),n]);ren()}ren()</script>
-</main><script src="chrome.js"></script></body></html>
+</main><script src="chrome.js?v=4"></script></body></html>
