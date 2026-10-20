@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css"></head>
+<body class="app"><script src="data.js"></script><script src="portal.js"></script><main class="wrap">
+<div class="pagehead"><div><h1>Workshops &amp; sessions</h1><p>Led by 100th Street Bank associate volunteers. Free for members.</p></div><button class="btn" onclick="book()">Book 1:1 office hours</button></div>
+<div class="fbar"><select id="ft"></select><select id="ff"></select><div class="tabs" style="margin:0"><button class="on" id="vl">List</button><button id="vc">Calendar</button></div></div>
+<div id="out"></div>
+<script>
+document.querySelector(".pagehead p").innerHTML=`Led by 100th Street Bank associate volunteers. Free for members.`;
+const kw=searchBox(document.querySelector(".fbar"),"Search sessions and programs");kw.oninput=ren;opts(ft,"Topic",TOPICS);opts(ff,"Format",["Workshop","Webinar","Clinic","Program"]);let view="list";
+vl.onclick=()=>{view="list";vl.classList.add("on");vc.classList.remove("on");ren()};vc.onclick=()=>{view="cal";vc.classList.add("on");vl.classList.remove("on");ren()};
+[ft,ff].forEach(s=>s.onchange=ren);
+function btn(s){if(s.apply){const r=regd().includes(s.id);return `<button class="btn sm ${r?"done":""}" onclick="toggleReg('${s.id}');ren()">${r?"Requested ✓":"Request a spot"}</button>`}const r=regd().includes(s.id);return `<button class="btn sm ${r?"done":""}" onclick="toggleReg('${s.id}');ren()">${r?"Registered ✓":"Register"}</button>`}
+function ren(){const L=SESSIONS.filter(s=>hit(kw.value,s.t,s.n,s.m,s.f)&&(!ft.value||s.t==ft.value)&&(!ff.value||s.f==ff.value));
+if(view=="list"){out.innerHTML=L.length?`<div class="grid">${L.map(s=>`<div class="card"><span class="tag">${s.t}</span><span class="tag">${s.f}</span><h3 style="margin-top:6px">${s.n}</h3><p>${s.apply?"Next cohort starts ":""}${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""}</p><div class="foot">${btn(s)}</div></div>`).join("")}</div>`:"<p>No sessions match. Try fewer filters.</p>";return}
+let h="";[[2026,9,"October"],[2026,10,"November"],[2026,11,"December"]].forEach(([y,mo,name])=>{const first=new Date(y,mo,1).getDay(),n=new Date(y,mo+1,0).getDate();
+const ev=L.filter(s=>+s.d.slice(5,7)==mo+1);if(!ev.length)return;h+=`<h3 style="margin-top:12px">${name} ${y}</h3><div class="cal">`+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<div class="h">${d}</div>`).join("")+"<div style='background:none'></div>".repeat(first);
+for(let d=1;d<=n;d++){h+=`<div>${d}${ev.filter(s=>+s.d.slice(8)==d).map(s=>`<span class="ev" title="${s.n}">${regd().includes(s.id)?"✓ ":""}${s.t}</span>`).join("")}</div>`}h+="</div>"});out.innerHTML=h||"<p>No sessions match.</p>"}
+ren();
+function book(){const m=modal(`<h3>Book 1:1 office hours</h3><p class="mut">30 minutes with a 100th Street Bank volunteer ${S()}</p><form class="f" id="bf"><label>Topic<select>${TOPICS.map(t=>`<option>${t}</option>`).join("")}</select></label><label>Date<input type="date" required value="2026-11-05"></label><label>What do you want help with?<textarea rows="3"></textarea></label><button class="btn">Request time</button></form><div class="ok"><b>Requested.</b> We'll confirm by email. (Prototype: nothing was sent.)</div>`);
+bf.onsubmit=e=>{e.preventDefault();bf.style.display="none";bf.nextElementSibling.style.display="block"}}
+</script>
+</main><script src="chrome.js"></script></body></html>

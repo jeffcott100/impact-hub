@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css"></head>
+<body class="app"><script src="data.js"></script><script src="portal.js"></script><main class="wrap">
+<div class="welcome"><h1 id="wh"></h1><p id="wp"></p></div>
+<h3 style="margin:0 0 8px">Your profile</h3><div class="profile" id="pf"></div>
+<div class="two"><div>
+<div class="card"><h3>Your next sessions</h3><div id="ns"></div><p><a href="app-workshops.html">Browse all workshops →</a></p></div>
+<div class="card" style="margin-top:16px"><h3>Recommended funding for you</h3><div id="rg"></div><div class="foot" style="margin-top:10px"><a href="app-grants.html">Open funding finder →</a></div></div>
+</div><div>
+<div class="card bankcard bankside"><div class="bankhero"><div><h3>Banking with 100th Street Bank</h3><p>Accounts and cards for small businesses.</p></div><div class="ccard"><span class="chip"></span><b>HARBOR &amp; VINE CATERING</b><small>100th Street Bank · Business</small></div></div>
+<div class="bopts"><a href="app-banking.html#chk"><span class="bi">▣</span><b>Business checking</b><small>Everyday account for payments and payroll</small></a><a href="app-banking.html#sav"><span class="bi">◔</span><b>Business savings</b><small>Reserves for taxes and slow months</small></a><a href="app-banking.html#cc"><span class="bi">▭</span><b>Business credit card</b><small>Everyday spend, rewards, employee cards</small></a><a href="app-banking.html#loc"><span class="bi">↗</span><b>Line of credit &amp; loans</b><small>Working capital and equipment financing</small></a><a href="app-banking.html#dc"><span class="bi">◇</span><b>Business debit card</b><small>Linked to checking, with spend controls</small></a><a href="app-banking.html#mer"><span class="bi">⇄</span><b>Merchant services</b><small>Accept card and tap-to-pay</small></a></div>
+<div class="foot"><a class="btn sm" href="app-banking.html">Compare all accounts</a><a href="app-banking.html#talk">Talk to a banker</a></div></div>
+</div></div>
+<div class="card perkrow"><h3>Perks for members</h3><div id="pk"></div><p><a href="app-perks.html">All perks →</a></p></div>
+<script>
+wh.textContent=`Welcome back, ${ME.owner}`;wp.innerHTML=`${ME.biz} · ${ME.city} ${S()}`;
+function ren(){const r=regd();let L=SESSIONS.filter(s=>r.includes(s.id));if(!L.length)L=SESSIONS.slice(0,3);
+ns.innerHTML=(r.length?"":`<p>You haven't registered yet. Suggested for you:</p>`)+L.map(s=>`<div class="row"><span class="date">${fmtD(s.d)}</span><div style="flex:1"><b>${s.n}</b><small>${s.f}${s.m?" · "+s.m:""}</small></div>${r.includes(s.id)?'<span class="tag">Registered</span>':`<button class="btn sm" onclick="toggleReg('${s.id}');ren()">Register</button>`}</div>`).join("")}
+ren();
+rg.innerHTML=GRANTS.filter(g=>g.m==ME.market||g.m=="National").slice(0,3).map(g=>`<div class="row"><div style="flex:1"><b>${g.n}</b><small>${g.who}</small><button class="btn sm" style="margin-top:6px" onclick="advisor('${g.n.replace(/'/g,"")}')">Schedule coaching</button></div><b>${g.a}</b></div>`).join("");
+pk.innerHTML=PERKS.filter(p=>!p.bank).slice(0,4).map(p=>`<div class="row perk">${plogo(p)}<div><b>${p.n}</b><small>${p.o}</small></div></div>`).join("");
+pf.innerHTML=[["Business",ME.biz],["Owner",ME.owner+" Price"],["Location",ME.city],["Region",ME.market],["Volunteer hours received","14"]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")+`<a class="btn sm ghost" href="#" style="margin-left:auto">Edit profile</a>`;
+</script>
+</main><script src="chrome.js"></script></body></html>

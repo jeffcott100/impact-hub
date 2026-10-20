@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Banking · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css"></head>
+<body class="app"><script src="data.js"></script><script src="portal.js"></script><main class="wrap">
+<div class="bankhero big"><div><h1>Banking with 100th Street Bank</h1><p>Business accounts built for owners at your stage. No rates are shown here.</p></div><div class="ccard"><span class="chip"></span><b>HARBOR &amp; VINE CATERING</b><small>100th Street Bank · Business</small></div></div>
+<div class="grid">
+<div class="card bk" id="chk"><span class="bico">▣</span><h3>Small business checking</h3><p>Separate business money from personal, accept payments, and see cash flow in one place. Options for low- and high-transaction businesses.</p><div class="foot"><a class="btn sm" href="#">See checking options</a></div></div>
+<div class="card bk" id="cc"><span class="bico">▭</span><h3>Business credit cards</h3><p>Cards for everyday spend and rewards, plus employee cards with spending controls. A first step to building business credit.</p><div class="foot"><a class="btn sm" href="#">See business cards</a></div></div>
+<div class="card bk" id="sav"><span class="bico">◔</span><h3>Small business savings</h3><p>Set aside reserves for taxes, payroll and slow months, linked to your business checking.</p><div class="foot"><a class="btn sm" href="#">See savings options</a></div></div>
+<div class="card bk" id="dc"><span class="bico">◇</span><h3>Business debit card</h3><p>A debit card linked to your business checking, with per-card spending limits for employees.</p><div class="foot"><a class="btn sm" href="#">See debit cards</a></div></div>
+<div class="card bk" id="loc"><span class="bico">↗</span><h3>Lines of credit &amp; loans</h3><p>Working capital lines, equipment financing and term loans when you're ready to grow.</p><div class="foot"><a class="btn sm" href="#">See lending options</a></div></div>
+<div class="card bk" id="mer"><span class="bico">⇄</span><h3>Merchant services</h3><p>Accept cards, tap-to-pay and online payments, with deposits straight into checking.</p><div class="foot"><a class="btn sm" href="#">See merchant services</a></div></div>
+<div class="card"><h3>Not ready yet?</h3><p>Start with <a href="app-workshops.html">Managing business credit accounts</a> and <a href="app-workshops.html">Taking on a business loan</a> workshops, or a CDFI partner via the <a href="app-grants.html">funding finder</a>.</p></div>
+</div>
+<div class="card" id="talk" style="margin-top:16px;max-width:640px"><h3>Talk to a banker</h3><p class="mut">Three quick questions, then a small business banker reaches out.</p>
+<div id="st"></div></div>
+<script>const Q=[["What do you need most?",["A business checking account","A business savings account","Business credit","Not sure, I want advice"]],["Annual revenue?",["Under $100K","$100K–$500K","$500K–$2M","Over $2M"]],["How should we reach you?",["Phone call","Video meeting","In a 100th Street Bank Café","Email"]]];let i=0,A=[];
+function step(){if(i<Q.length){st.innerHTML=`<p><b>Step ${i+1} of ${Q.length}: ${Q[i][0]}</b></p><div class="filters">${Q[i][1].map(o=>`<button>${o}</button>`).join("")}</div>`;st.querySelectorAll("button").forEach(b=>b.onclick=()=>{A.push(b.textContent);i++;step()});return}
+st.innerHTML=`<p>${A.map((a,k)=>`${Q[k][0]} <b>${a}</b>`).join("<br>")}</p><form class="f" id="tf"><label>Best time<select><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label><button class="btn">Request a banker</button> <a href="#talk" onclick="i=0;A=[];step()">Start over</a></form><div class="ok"><b>Request sent.</b> A banker will reach out within 1 business day. (Prototype: nothing was sent.)</div>`;
+tf.onsubmit=e=>{e.preventDefault();tf.style.display="none";tf.nextElementSibling.style.display="block"}}step()</script>
+</main><script src="chrome.js"></script></body></html>
