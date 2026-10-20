@@ -152,6 +152,9 @@ function drawMap(){
  function render(){const all=DOTS.filter(d=>K=="All"||d.k==K),list=all.filter(d=>R=="All"||d.m==R),z=zoom();
   svg.querySelectorAll(".st path").forEach(p=>p.classList.toggle("hl",R!="All"&&p.dataset.r==R));
   document.getElementById("mapcount").textContent=`${list.length} organizations · ${new Set(list.map(d=>d.c)).size} cities`;
+  const em=document.getElementById("mapempty"),lg=document.getElementById("maplegend");const what=K=="All"?"funded organizations":K+" organizations";
+  if(!list.length){em.hidden=false;em.innerHTML=`<b>No ${what} in ${R=="All"?"any region":R} yet.</b><span>${all.length?`${all.length} elsewhere, shown in grey. `:""}Try another region or topic.</span>`}else em.hidden=true;
+  lg.innerHTML=R=="All"?`<span><i class="lin"></i>Funded organization</span>`:`<span><i class="lin"></i>In ${R} (${list.length})</span><span><i class="lout"></i>Other regions (${all.length-list.length})</span>`;
   document.getElementById("maphint").textContent=z<DETAIL?"":"Pick a region to highlight it. Hover or tap a dot.";
   if(z<DETAIL){g.innerHTML="";const by=MAPREG.map(r=>[r,list.filter(d=>d.m==r)]).filter(x=>x[1].length);
    rgG.innerHTML=by.map(([r,L])=>{const cx=L.reduce((s,d)=>s+US_CITY[d.c][0],0)/L.length,cy=L.reduce((s,d)=>s+US_CITY[d.c][1],0)/L.length,rad=14+Math.sqrt(L.length)*4.5;
@@ -160,7 +163,7 @@ function drawMap(){
     const show=()=>tipAt(b.querySelector("circle"),`<b>${b.dataset.r}</b><div>${L.length} organizations in ${new Set(L.map(d=>d.c)).size} cities</div><div class="amt">${fmt(tot)}+</div><small>Click to zoom in</small>`);
     b.addEventListener("mouseenter",show);b.addEventListener("focus",show);b.addEventListener("click",e=>{e.stopPropagation();tip.style.display="none";fit(L)})});return}
   rgG.innerHTML="";const r=7/Math.sqrt(z);
-  g.innerHTML=all.map(d=>{const [x,y]=pos(d,all);return `<circle class="${R!="All"&&d.m!=R?"dim":""}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${r}" style="stroke-width:${1.5/Math.sqrt(z)}" tabindex="0"/>`}).join("");
+  g.innerHTML=all.map(d=>{const [x,y]=pos(d,all);return `<circle class="${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" style="stroke-width:${1.5/Math.sqrt(z)}" tabindex="0"/>`}).join("");
   g.querySelectorAll("circle").forEach(c=>{const show=()=>{const d=DOTS[c.dataset.i];tipAt(c,`<b>${d.o}</b><div>${d.c} · ${d.m}</div><div><span class="tag">${d.k}</span></div><div>${d.p}</div><div class="amt">${fmt(d.a)}</div>`);g.querySelectorAll(".on").forEach(z=>z.classList.remove("on"));c.classList.add("on")};
    c.addEventListener("mouseenter",show);c.addEventListener("focus",show);c.addEventListener("click",e=>{e.stopPropagation();show()})});}
  const pt=e=>{const b=svg.getBoundingClientRect();return[V.x+(e.clientX-b.left)/b.width*V.w,V.y+(e.clientY-b.top)/b.height*V.w*H/W]};
@@ -177,8 +180,11 @@ function drawMap(){
 // Testimonials: illustrative composites. Names are invented; quotes adapted from public community impact reporting.
 const TESTI=[
 {n:"Marcus Bell",b:"Co-owner, neighborhood restaurant · Union Kitchen Accelerator, DC",q:"We walked in with a family recipe and walked out with a priced, packaged product on real shelves, and people who actually knew how to get it there.",i:"img/t1.jpg"},
-{n:"Lucía Ortega",b:"Founder, translation services firm · Supplier mentorship, Richmond",q:"Asking for help takes courage, but a good mentor helps you see your business in a whole new way.",i:"img/t2.jpg"}];
-const TLOGO=[{w:"Union Kitchen",t:"Food & beverage accelerator"},{w:"100th Street Bank",t:"Supplier mentorship"},{l:"img/logos/dec.png",t:"The DEC Network"},{l:"img/logos/everyoneon.png",t:"Everyone On"},{l:"img/logos/ala.svg",t:"Public libraries"},{l:"img/logos/robinhood.gif",t:"Robin Hood"}];
+{n:"Lucía Ortega",b:"Founder, translation services firm · Supplier mentorship, Richmond",q:"Asking for help takes courage, but a good mentor helps you see your business in a whole new way.",i:"img/t2.jpg"},
+{n:"Andre Collins",b:"Founder, loyalty-tech startup · Accelerator, Dallas",q:"Nonprofits, membership groups and faith-based organizations have some of the biggest direct impact on their communities.",i:"img/t3.jpg"},
+{n:"Denise Harper",b:"Digital skills graduate · Houston",q:"I wanted to learn the computer, build presentations and write my own resume to start a business. Now I can, and I got past my anxiety along the way.",i:"img/t4.jpg"},
+{n:"",b:"CEO, nonprofit CDFI partner",q:"We meet talented entrepreneurs every day with a clear vision for their business. What’s often missing isn’t ambition, it’s someone willing to believe in that vision and back it with the right capital and support.",i:"img/t6.jpg"}];
+const TLOGO=[{w:"Union Kitchen",t:"Food & beverage accelerator"},{w:"100th Street Bank",t:"Supplier mentorship"},{l:"img/logos/dec.png",t:"The DEC Network"},{l:"img/logos/everyoneon.png",t:"Everyone On"},{w:"CDFI partner",t:"CDFI partner"},{l:"img/logos/robinhood.gif",t:"Robin Hood"}];
 function renderTesti(el,list=TESTI){const lg=i=>{const L=TLOGO[i]||{};return L.l?`<img class="vlogo" src="${L.l}" alt="${L.t}">`:`<span class="vlogo vwm">${L.w||""}</span>`};
  el.innerHTML=list.map((t,i)=>`<figure class="vcard${t.x?" noph":""}" tabindex="0" data-i="${i}">${t.x?"":`<img class="vph" src="${t.i}" alt="">`}<div class="vbody"><span class="vq">“</span><blockquote>${t.q}</blockquote><figcaption><span>${t.n?`<b>${t.n}</b>`:""}<small>${t.b}</small></span>${t.x?"":lg(i)}</figcaption><span class="vmore">Read their story →</span></div></figure>`).join("");
  const dots=document.getElementById("vdots");dots.innerHTML=list.map((_,i)=>`<button aria-label="Story ${i+1}" class="${i?"":"on"}"></button>`).join("");

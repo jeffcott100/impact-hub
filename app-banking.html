@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Banking · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=4"></head>
-<body class="app"><script src="data.js?v=4"></script><script src="portal.js?v=4"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Banking · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=5"></head>
+<body class="app"><script src="data.js?v=5"></script><script src="portal.js?v=5"></script><main class="wrap">
 <div class="bankhero big"><div><h1>Banking with 100th Street Bank</h1><p>Business accounts built for owners at your stage. No rates are shown here.</p></div><div class="ccard"><span class="chip"></span><b>HARBOR &amp; VINE CATERING</b><small>100th Street Bank · Business</small></div></div>
 <div class="grid">
 <div class="card bk" id="chk"><span class="bico">▣</span><h3>Small business checking</h3><p>Separate business money from personal, accept payments, and see cash flow in one place. Options for low- and high-transaction businesses.</p><div class="foot"><a class="btn sm" href="#">See checking options</a></div></div>
@@ -21,4 +21,4 @@
 function step(){if(i<Q.length){st.innerHTML=`<p><b>Step ${i+1} of ${Q.length}: ${Q[i][0]}</b></p><div class="filters">${Q[i][1].map(o=>`<button>${o}</button>`).join("")}</div>`;st.querySelectorAll("button").forEach(b=>b.onclick=()=>{A.push(b.textContent);i++;step()});return}
 st.innerHTML=`<p>${A.map((a,k)=>`${Q[k][0]} <b>${a}</b>`).join("<br>")}</p><form class="f" id="tf"><label>Best time<select><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label><button class="btn">Request a banker</button> <a href="#talk" onclick="i=0;A=[];step()">Start over</a></form><div class="ok"><b>Request sent.</b> A banker will reach out within 1 business day. (Prototype: nothing was sent.)</div>`;
 tf.onsubmit=e=>{e.preventDefault();tf.style.display="none";tf.nextElementSibling.style.display="block"}}step()</script>
-</main><script src="chrome.js?v=4"></script></body></html>
+</main><script src="chrome.js?v=5"></script></body></html>
