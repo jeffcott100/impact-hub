@@ -176,6 +176,7 @@ function drawMap(){
 }
 // Testimonials: illustrative composites. Names are invented; quotes adapted from public community impact reporting.
 const TESTI=[
+{"n": "", "b": "CEO, nonprofit CDFI partner", "q": "We meet talented entrepreneurs every day with a clear vision for their business. What’s often missing isn’t ambition, it’s someone willing to believe in that vision and back it with the right capital and support. 100th Street Bank’s support helps us look beyond a credit score and stand alongside the people behind small businesses, moving them, their families and their communities toward financial ascension.", "x": 1},
 {n:"Marcus Bell",b:"Co-owner, neighborhood restaurant · Union Kitchen Accelerator, DC",q:"We walked in with a family recipe and walked out with a priced, packaged product on real shelves, and people who actually knew how to get it there.",i:"img/t1.jpg"},
 {n:"Lucía Ortega",b:"Founder, translation services firm · Supplier mentorship, Richmond",q:"Asking for help takes courage, but a good mentor helps you see your business in a whole new way.",i:"img/t2.jpg"},
 {n:"Andre Collins",b:"Founder, loyalty-tech startup · Accelerator, Dallas",q:"Nonprofits, membership groups and faith-based organizations have some of the biggest direct impact on their communities.",i:"img/t3.jpg"},
@@ -183,7 +184,6 @@ const TESTI=[
 {n:"Karen Whitfield",b:"Library director · Community Connect, Delaware",q:"It's been so popular that the minute a hotspot comes back, someone else already has it on hold.",i:"img/t5.jpg"},
 {n:"Rajiv Mehta",b:"Nonprofit CEO · Bronx, NY",q:"Young adults today face more obstacles than options, so programs like these matter more than ever.",i:"img/t6.jpg"},
 {"n": "", "b": "CDFI partner · Deep South", "q": "Having a working vehicle is a key to livelihood in Deep South communities. More than just a ride to work, this is essential for entrepreneurs, providing a pathway to better jobs and broader opportunities.", "x": 1},
-{"n": "", "b": "CDFI partner · Small business lending", "q": "We meet talented entrepreneurs every day with a clear vision for their business. What’s often missing isn’t ambition—it’s someone willing to believe in that vision and back it with the right capital and support.", "x": 1},
 {"n": "", "b": "Resident · Affordable housing, Northern Virginia", "q": "I feel very stable—very confident about my place. I feel like I’m home now.", "x": 1},
 {"n": "", "b": "State housing agency · Delaware", "q": "A home is much more than a roof over your head. It’s where children do homework, where families celebrate milestones, where people build generational wealth.", "x": 1},
 {"n": "", "b": "Nonprofit partner · Financial health", "q": "As more consumers navigate irregular income and unexpected expenses, innovative tools can help people manage their money with greater confidence and flexibility.", "x": 1},
