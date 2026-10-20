@@ -175,3 +175,5 @@ html{scroll-behavior:smooth}section[id]{scroll-margin-top:72px}
 .bankside .bopts{grid-template-columns:1fr}
 .perkrow{margin-top:16px}.perkrow #pk{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.perkrow #pk .row{border:1px solid var(--g2);border-radius:10px;padding:12px}
 @media(max-width:800px){.perkrow #pk{grid-template-columns:1fr 1fr}}
+@media(max-width:800px){.logorow{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 14px}.logorow img{max-width:100%}.bankhero{flex-wrap:wrap}.bankhero>*{min-width:0}}
+html,body{overflow-x:clip}
