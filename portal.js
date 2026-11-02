@@ -56,7 +56,7 @@ const SESSIONS=[
 const SLOTS={s1:["2026-11-11 12:00 ET","2026-11-16 15:00 ET","2026-11-20 10:00 ET"],s3:["2026-11-18 13:00 ET","2026-11-21 09:00 ET"],s13:["2026-11-19 12:00 ET","2026-11-24 14:00 ET"],s14:["2026-11-23 12:00 ET","2026-11-27 11:00 ET"],s15:["2026-11-30 10:00 ET","2026-12-02 13:00 ET","2026-12-04 09:30 ET"],s4:["2026-11-20 09:30 ET","2026-11-25 10:30 ET"]};
 
 // Session relevance to the business profile: topics that matter most per industry, plus local sessions.
-const IND_TOPICS={"Food, beverage & hospitality":["Finance","Operations","Legal"],"Education, childcare & health":["Legal","Operations","Finance"],"Retail, beauty & consumer goods":["Marketing","Finance","AI"],"Technology & software":["AI","Technology","Finance"],"Professional, financial & business services":["Marketing","AI","Legal"],"Construction, manufacturing & trades":["Finance","Operations","Legal"],"Nonprofit & social enterprise":["Finance","Legal","Marketing"]};
+const IND_TOPICS={"Food, beverage & hospitality":["Finance","Operations","Legal"],"Education & childcare":["Legal","Operations","Finance"],"Health & life sciences":["Legal","Operations","Finance"],"Retail & consumer":["Marketing","Finance","AI"],"Technology & software":["AI","Technology","Finance"],"Professional, financial & business services":["Marketing","AI","Legal"],"Construction & manufacturing":["Finance","Operations","Legal"],"Nonprofit & social enterprise":["Finance","Legal","Marketing"]};
 const SM_STATES={"Virginia":["Virginia"],"Greater Washington":["District of Columbia","Maryland","Virginia"],"Texas":["Texas"]};
 function sessScore(prof,s){let sc=0;const t=IND_TOPICS[prof.industry]||[];const i=t.indexOf(s.t);if(i>=0)sc+=3-i;if(s.m){sc+=(SM_STATES[s.m]||[]).includes(prof.state)?2:-1}
  if(prof.years<=2&&/credit|loan basics|statements/i.test(s.n))sc+=1;if(prof.employees>=10&&/coaching|cash flow/i.test(s.n))sc+=1;return sc}
@@ -67,14 +67,14 @@ const GRANTS=[
 {u:"https://thedec.co/",st:["Texas"],l:"img/logos/dec.png",k:"Technology & software",n:"The DEC Network Accelerator awards",a:"$2,000–$15,000",m:"West South Central",who:"Dallas founders in the 12-week cohort",type:"Grant",src:"ACC"},
 {u:"https://liftoffhouston.org/",st:["Texas"],l:"img/logos/houston.svg",k:"Technology & software",n:"Liftoff Houston seed prizes",a:"$30,000+ across winners",m:"West South Central",who:"Houston startups, business plan competition",type:"Competition",src:"SMB"},
 {u:"https://www.thesoarfund.org/",st:["Alabama","Arkansas","District of Columbia","Florida","Georgia","Kentucky","Louisiana","Maryland","Mississippi","North Carolina","Oklahoma","South Carolina","Tennessee","Texas","Virginia","West Virginia"],w:"SOAR",n:"SOAR Fund CDFI lending",a:"Loan via local CDFI",m:"National",who:"SMBs in 15 southern states + DC",type:"Loan",src:"SMB"},
-{st:["Delaware"],w:"DMS",k:"Retail, beauty & consumer goods",n:"Delaware Main Street Micro-grant",a:"$5,000",m:"South Atlantic",who:"Wilmington storefronts, under 10 staff",type:"Grant",S:1},
+{st:["Delaware"],w:"DMS",k:"Retail & consumer",n:"Delaware Main Street Micro-grant",a:"$5,000",m:"South Atlantic",who:"Wilmington storefronts, under 10 staff",type:"Grant",S:1},
 {st:"ALL",w:"WFG",n:"Women Founders Growth Fund",a:"$25,000",m:"National",who:"Women-owned, $100K–$2M revenue",type:"Grant",S:1},
-{st:["Texas"],w:"DDU",k:"Retail, beauty & consumer goods",n:"Dallas Digital Upgrade Grant",a:"$3,500",m:"West South Central",who:"Retail & service SMBs going online",type:"Grant",S:1},
+{st:["Texas"],w:"DDU",k:"Retail & consumer",n:"Dallas Digital Upgrade Grant",a:"$3,500",m:"West South Central",who:"Retail & service SMBs going online",type:"Grant",S:1},
 {st:["Virginia"],w:"RKF",k:"Food, beverage & hospitality",n:"Richmond Kitchen Equipment Fund",a:"$7,500",m:"South Atlantic",who:"Food businesses, 1+ yr operating",type:"Grant",S:1},
 {st:["Texas"],w:"DRR",k:"Food, beverage & hospitality",n:"Dallas Restaurant Resilience Grant",a:"$10,000",m:"West South Central",who:"Dallas restaurants and food trucks, 1+ yr operating",type:"Grant",S:1},
-{st:["Massachusetts","Connecticut","Rhode Island","New Hampshire","Vermont","Maine"],w:"NECC",k:"Education, childcare & health",n:"New England Child Care Growth Grant",a:"$12,000",m:"New England",who:"Licensed child care centers and family child care, Boston and New England",type:"Grant",S:1},
-{st:["Massachusetts"],w:"BMS",k:"Retail, beauty & consumer goods",n:"Boston Main Streets Storefront Grant",a:"$5,000",m:"New England",who:"Boston storefront businesses, under 20 staff",type:"Grant",S:1},
-{st:["Texas"],w:"TCF",k:"Construction, manufacturing & trades",n:"Texas Trades Equipment Loan",a:"Up to $50,000",m:"West South Central",who:"Contractors, makers and trades businesses in Texas",type:"Loan",S:1},
+{st:["Massachusetts","Connecticut","Rhode Island","New Hampshire","Vermont","Maine"],w:"NECC",k:"Education & childcare",n:"New England Child Care Growth Grant",a:"$12,000",m:"New England",who:"Licensed child care centers and family child care, Boston and New England",type:"Grant",S:1},
+{st:["Massachusetts"],w:"BMS",k:"Retail & consumer",n:"Boston Main Streets Storefront Grant",a:"$5,000",m:"New England",who:"Boston storefront businesses, under 20 staff",type:"Grant",S:1},
+{st:["Texas"],w:"TCF",k:"Construction & manufacturing",n:"Texas Trades Equipment Loan",a:"Up to $50,000",m:"West South Central",who:"Contractors, makers and trades businesses in Texas",type:"Loan",S:1},
 {st:"ALL",w:"PSF",k:"Professional, financial & business services",n:"Professional Services Growth Grant",a:"$7,500",m:"National",who:"Consultancies, agencies and service firms, 2+ yrs",type:"Grant",S:1}];
 const ACCS=[
 {n:"The DEC Network",l:"img/logos/dec.png",org:"Dallas Small Business Accelerator, with UT Dallas",m:"West South Central",st:"Early stage",len:"12 weeks",src:"ACC",u:"https://thedec.co/"},
@@ -89,7 +89,7 @@ const ACCS=[
 {n:"gener8tor",w:"g8",org:"gBETA Milwaukee, Milwaukee, WI",m:"East North Central",st:"Idea / early stage",len:"Free pre-accelerator",u:"https://www.gener8tor.com/gbeta/milwaukee"},
 {n:"LearnLaunch",l:"img/logos/learnlaunch.svg",org:"LearnLaunch Accelerator, Boston, MA",m:"New England",st:"Pre-seed",len:"Accelerator + pre-seed fund",u:"https://learnlaunch.com/"},
 {n:"La Cocina",w:"LC",org:"Food business incubator, San Francisco, CA",m:"Pacific",st:"Idea / early stage",len:"Kitchen incubator",u:"https://www.lacocinasf.org/"},
-{n:"Boomtown",w:"BOOM",org:"Boomtown Accelerator, Boulder, CO",m:"Mountain",st:"Early stage",len:"Startup accelerator",u:"https://boomtownaccelerators.com/"}];
+{n:"Boomtown",l:"img/logos/boomtown.png",org:"Boomtown Accelerator, Boulder, CO",m:"Mountain",st:"Early stage",len:"Startup accelerator",u:"https://boomtownaccelerators.com/"}];
 const PERKS=[
 {n:"Claude or Gemini AI",l:"img/logos/claude.svg",o:"Member discount on AI assistant access for your team",sv:"20% off team plans for 12 months",c:"AI"},
 {n:"Google Workspace",l:"img/logos/gworkspace.svg",o:"Member discount on business email, Docs and Drive",sv:"First 3 months free",c:"Productivity"},

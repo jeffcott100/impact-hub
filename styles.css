@@ -427,3 +427,7 @@ header.top:has(.tourhl){z-index:22}
 @media(max-width:600px){.pfpage form.f.pform{grid-template-columns:1fr}}
 
 @media(max-width:600px){.modal>div *{min-width:0}.mgrid{grid-template-columns:minmax(0,1fr)}.modal form.f{grid-template-columns:minmax(0,1fr)}.modal select,.modal input,.modal textarea{max-width:100%}}
+
+footer .flogo{display:inline-flex;vertical-align:middle;margin-right:10px}footer .flogo svg{width:28px;height:28px}
+select{padding-right:32px!important;text-overflow:ellipsis}
+select option{padding-right:20px}
