@@ -164,7 +164,7 @@ function drawMap(){
     const show=()=>tipAt(b.querySelector("circle"),`<b>${b.dataset.r}</b><div>${L.length} organizations in ${new Set(L.map(d=>d.c)).size} cities</div><div class="amt">${fmt(tot)}+</div><small>Click to zoom in</small>`);
     b.addEventListener("mouseenter",show);b.addEventListener("focus",show);b.addEventListener("click",e=>{e.stopPropagation();tip.style.display="none";fit(L)})});return}
   rgG.innerHTML="";const r=7/Math.sqrt(z);
-  const intro=!introDone&&R=="All"&&K=="All";
+  const intro=false;
   g.innerHTML=all.map((d,oi)=>{const [x,y]=pos(d,all);return `<circle class="${intro?"pend":""} ${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" style="stroke-width:${1.5/Math.sqrt(z)}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" tabindex="0"/>`}).join("");
   if(intro){const paths=[...svg.querySelectorAll(".st path")],byName={};US_STATES.forEach((s2,i)=>byName[s2.n]=paths[i]);
    paths.forEach(p=>{if(p.classList.contains("fp")){p.classList.remove("fp");p.classList.add("fpw")}});
