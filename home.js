@@ -152,20 +152,20 @@ function drawMap(){
  const tipAt=(el,html)=>{tip.innerHTML=html;const r=svg.parentNode.getBoundingClientRect(),b=el.getBoundingClientRect();const x=b.left-r.left+b.width/2,y=b.top-r.top;tip.style.display="block";const w=tip.offsetWidth;tip.style.left=Math.max(4,Math.min(r.width-w-4,x-w/2))+"px";tip.style.top=Math.max(4,y-tip.offsetHeight-10)+"px"};
  function render(){const all=DOTS.filter(d=>K=="All"||d.k==K),list=all.filter(d=>R=="All"||d.m==R),z=zoom();
   svg.querySelectorAll(".st path").forEach(p=>p.classList.toggle("hl",R!="All"&&p.dataset.r==R));
-  document.getElementById("mapcount").textContent=`${list.length} organizations · ${new Set(list.map(d=>d.c)).size} cities`;
+  
   const em=document.getElementById("mapempty"),lg=document.getElementById("maplegend");const what=K=="All"?"funded organizations":K+" organizations";
   if(!list.length){em.hidden=false;em.innerHTML=`<b>No ${what} in ${R=="All"?"any region":R} yet.</b><span>${all.length?`${all.length} elsewhere, shown in grey. `:""}Try another region or topic.</span>`}else em.hidden=true;
-  lg.innerHTML=R=="All"?`<span><i class="lin"></i>Funded organization</span>`:`<span><i class="lin"></i>In ${R} (${list.length})</span><span><i class="lout"></i>Other regions (${all.length-list.length})</span>`;
+  lg.innerHTML=R=="All"?`<span><i class="lin"></i>Funded organization</span>`:`<span><i class="lin"></i>In ${R}</span><span><i class="lout"></i>Other regions</span>`;
   document.getElementById("maphint").textContent=z<DETAIL?"":"Pick a region to highlight it. Hover or tap a dot.";
   if(z<DETAIL){g.innerHTML="";const by=MAPREG.map(r=>[r,list.filter(d=>d.m==r)]).filter(x=>x[1].length);
    rgG.innerHTML=by.map(([r,L])=>{const cx=L.reduce((s,d)=>s+US_CITY[d.c][0],0)/L.length,cy=L.reduce((s,d)=>s+US_CITY[d.c][1],0)/L.length,rad=14+Math.sqrt(L.length)*4.5;
     return `<g class="rb" data-r="${r}" tabindex="0"><circle cx="${cx}" cy="${cy}" r="${rad}"/><text x="${cx}" y="${cy+5}" class="n">${L.length}</text><text x="${cx}" y="${cy+rad+15}" class="l">${r}</text></g>`}).join("");
    rgG.querySelectorAll(".rb").forEach(b=>{const L=list.filter(d=>d.m==b.dataset.r),tot=L.reduce((s,d)=>s+(d.a||0),0);
-    const show=()=>tipAt(b.querySelector("circle"),`<b>${b.dataset.r}</b><div>${L.length} organizations in ${new Set(L.map(d=>d.c)).size} cities</div><div class="amt">${fmt(tot)}+</div><small>Click to zoom in</small>`);
+    const show=()=>tipAt(b.querySelector("circle"),`<b>${b.dataset.r}</b><div class="amt">${fmt(tot)}+</div><small>Click to zoom in</small>`);
     b.addEventListener("mouseenter",show);b.addEventListener("focus",show);b.addEventListener("click",e=>{e.stopPropagation();tip.style.display="none";fit(L)})});return}
   rgG.innerHTML="";const r=7/Math.sqrt(z);
   const intro=false;
-  g.innerHTML=all.map((d,oi)=>{const [x,y]=pos(d,all);return `<circle class="${intro?"pend":""} ${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" style="stroke-width:${1.5/Math.sqrt(z)}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" tabindex="0"/>`}).join("");
+  g.innerHTML=all.map((d,oi)=>{const [x,y]=pos(d,all);return `<circle class="${intro?"pend":""} ${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" style="stroke-width:${1.5/Math.sqrt(z)}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${r}" tabindex="0"/>`}).join("");
   if(intro){const paths=[...svg.querySelectorAll(".st path")],byName={};US_STATES.forEach((s2,i)=>byName[s2.n]=paths[i]);
    paths.forEach(p=>{if(p.classList.contains("fp")){p.classList.remove("fp");p.classList.add("fpw")}});
    const cs=[...g.querySelectorAll("circle.pend")].sort((p,q)=>(+p.getAttribute("cx"))-(+q.getAttribute("cx")));
@@ -187,15 +187,16 @@ function drawMap(){
 }
 // Testimonials: illustrative composites. Names are invented; quotes adapted from public community impact reporting.
 const TESTI=[
-{n:"Marcus Bell",b:"Co-owner, small-batch sauce company · Union Kitchen Accelerator, DC",q:"A 100th Street Bank volunteer walked us through pricing and cash flow line by line. We left with a wholesale plan, a checking account that fits how we get paid, and a line of credit for our first big production run.",i:"img/v1.jpg"},
-{n:"Lucía Ortega",b:"Founder, translation services firm · LBAN Scaling Program, CA",q:"The pro bono legal clinic reviewed my first enterprise contract in a week. That one session kept me out of terms that would have sunk us.",i:"img/v2.jpg"},
-{n:"Andre Collins",b:"Founder, logistics software startup · The DEC Network, Dallas",q:"My consulting sessions with bank associates went deep on financial modeling and cybersecurity, things I couldn't afford to hire for yet. Investors noticed the difference.",i:"img/v3.jpg"},
-{n:"Priya Nair",b:"Owner, neighborhood bakery · HBK Incubates, New York",q:"I came for the kitchen space and found a banker who understood seasonal revenue. The bookkeeping workshops and merchant services setup paid for themselves in a month.",i:"img/v4.jpg"},
-{n:"",b:"Program director, incubator partner · Community Business Academy, Jersey City",q:"What changed for our entrepreneurs was the range of help: pro bono clinics on legal and tax questions, one-to-one consulting, and a clear path to their first business account and credit, all inside our program.",i:"img/v5.jpg"},
-{n:"",b:"Managing director, accelerator partner · gBETA Milwaukee",q:"Our founders used to finish the cohort and hit a wall on banking. Now bank volunteers run clinics on site, and graduates leave with banking relationships and options they can actually use.",i:"img/v6.jpg"}];
+{n:"Marcus Bell",r:"Co-owner",bz:"Small-batch sauce company",pg:"Union Kitchen Accelerator",c:"Washington, DC",q:"A 100th Street Bank volunteer walked us through pricing and cash flow line by line. We left with a wholesale plan, a checking account that fits how we get paid, and a line of credit for our first big production run.",i:"img/v1.jpg"},
+{n:"Lucía Ortega",r:"Founder",bz:"Translation services firm",pg:"LBAN Scaling Program",c:"Stanford, CA",q:"The pro bono legal clinic reviewed my first enterprise contract in a week. That one session kept me out of terms that would have sunk us.",i:"img/v2.jpg"},
+{n:"Andre Collins",r:"Founder",bz:"Logistics software startup",pg:"The DEC Network",c:"Dallas, TX",q:"My consulting sessions with bank associates went deep on financial modeling and cybersecurity, things I couldn't afford to hire for yet. Investors noticed the difference.",i:"img/v3.jpg"},
+{n:"Priya Nair",r:"Owner",bz:"Neighborhood bakery",pg:"HBK Incubates",c:"New York, NY",q:"I came for the kitchen space and found a banker who understood seasonal revenue. The bookkeeping workshops and merchant services setup paid for themselves in a month.",i:"img/v4.jpg"},
+{n:"Jordan Ellis",r:"Program director",bz:"Incubator partner",pg:"Rising Tide Capital, Community Business Academy",c:"Jersey City, NJ",q:"What changed for our entrepreneurs was the range of help: pro bono clinics on legal and tax questions, one-to-one consulting, and a clear path to their first business account and credit, all inside our program.",i:"img/v5.jpg"},
+{n:"Alex Moreno",r:"Managing director",bz:"Accelerator partner",pg:"gener8tor, gBETA Milwaukee",c:"Milwaukee, WI",q:"Our founders used to finish the cohort and hit a wall on banking. Now bank volunteers run clinics on site, and graduates leave with banking relationships and options they can actually use.",i:"img/v6.jpg"}];
+TESTI.forEach(t=>t.b=`${t.r}, ${t.bz} · ${t.pg} · ${t.c}`);
 const TLOGO=[{l:"img/logos/unionkitchen.png",t:"Union Kitchen"},{l:"img/logos/lban.png",t:"LBAN"},{l:"img/logos/dec.png",t:"The DEC Network"},{l:"img/logos/hbk.png",t:"Hot Bread Kitchen"},{l:"img/logos/rtc.png",t:"Rising Tide Capital"},{l:"img/logos/gener8tor.png",t:"gener8tor"}];
 function renderTesti(el,list=TESTI){const lg=i=>{const L=TLOGO[i]||{};return L.l?`<img class="vlogo" src="${L.l}" alt="${L.t}">`:`<span class="vlogo vwm">${L.w||""}</span>`};
- el.innerHTML=list.map((t,i)=>`<figure class="vcard${t.x?" noph":""}" tabindex="0" data-i="${i}">${t.x?"":`<img class="vph" src="${t.i}" alt="">`}<div class="vbody"><span class="vq">“</span><blockquote>${t.q}</blockquote><figcaption><span>${t.n?`<b>${t.n}</b>`:""}<small>${t.b}</small></span>${t.x?"":lg(i)}</figcaption><span class="vmore">Read their story →</span></div></figure>`).join("");
+ el.innerHTML=list.map((t,i)=>`<figure class="vcard${t.x?" noph":""}" tabindex="0" data-i="${i}">${t.x?"":`<img class="vph" src="${t.i}" alt="">`}<div class="vbody"><span class="vq">“</span><blockquote>${t.q}</blockquote><figcaption><span class="vwho"><b>${t.n}</b><small>${t.r}, ${t.bz}</small><small>${t.pg} · ${t.c}</small></span>${t.x?"":lg(i)}</figcaption><span class="vmore">Read their story →</span></div></figure>`).join("");
  const dots=document.getElementById("vdots");dots.innerHTML=list.map((_,i)=>`<button aria-label="Story ${i+1}" class="${i?"":"on"}"></button>`).join("");
  const n=list.length,step=()=>el.querySelector(".vcard").offsetWidth+24,cur=()=>Math.round(el.scrollLeft/step()),to=i=>el.scrollTo({left:((i%n)+n)%n*step(),behavior:"smooth"}),go=d=>to(cur()+d);
  document.getElementById("vprev").onclick=()=>go(-1);document.getElementById("vnext").onclick=()=>go(1);

@@ -1,11 +1,11 @@
 (function(){const app=document.body.classList.contains("app");const here=location.pathname.split("/").pop()||"index.html";
-const pub=[["index.html","Home"],["index.html#owners","For Business Owners"],["index.html#partners","For Incubators/Accelerators"]];
-const int=[["app-home.html","Home"],["app-workshops.html","Workshops"],["app-grants.html","Funding"],["app-accelerators.html","Accelerators"],["app-banking.html","Banking"],["app-perks.html","Perks"]];
+const pub=[["index.html","Home"],["index.html#partners","Partner with us"],["index.html#owners","For Business Owners"]];
+const int=[["app-home.html","Home"],["app-workshops.html","Workshops"],["app-grants.html","Funding & Accelerators"],["app-banking.html","Banking"],["app-perks.html","Perks"]];
 const L=app?int:pub;
 const h=document.createElement("header");h.className="top";h.innerHTML=`<div class="wrap"><a class="brand" href="${app?"app-home.html":"index.html"}"><svg class="blogo" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9" fill="#E8F1F7"/><path d="M9 29V17l11-7 11 7v12" fill="none" stroke="#013D5B" stroke-width="2.6" stroke-linejoin="round"/><path d="M15 29v-7h10v7" fill="none" stroke="#013D5B" stroke-width="2.6"/><circle cx="20" cy="17.5" r="2.2" fill="#CC2427"/></svg><span class="btxt"><b>Small Business Impact Hub</b><small>by 100th Street Bank${app?" · Member portal":""}</small></span></a>
-<nav class="main">${L.map(([f,t])=>`<a href="${f}" class="${f==here?"on":""}">${t}</a>`).join("")}</nav>
+<nav class="main">${L.map(([f,t])=>`<a href="${f}" class="${f==here||(f=="app-grants.html"&&here=="app-accelerators.html")?"on":""}">${t}</a>`).join("")}</nav>
 ${app?'<a class="btn sm ghost" style="color:#fff;border-color:#ffffff55" href="index.html">Exit to public site</a>':'<a class="btn sm ghost" href="app-home.html">Business owner login</a>'}</div>`;
-if(document.body.classList.contains("home")){const SP=[["impact","Impact"],["map","Where we invest"],["partners","For incubators"],["benefits","Benefits"],["owners","Find a program"],["stories","Press"],["voices","Voices"],["goals","Our goals"]];
+if(document.body.classList.contains("home")){const SP=[["impact","Impact"],["how","How it works"],["map","Where we invest"],["partners","Partner with us"],["benefits","Benefits"],["owners","Find a program"],["stories","Press"],["voices","Voices"],["goals","Our goals"]];
  const sn=document.createElement("nav");sn.className="spy";sn.innerHTML=`<div class="wrap">${SP.map(([i,t])=>`<a href="#${i}" data-id="${i}">${t}</a>`).join("")}<i class="spybar"></i></div>`;h.append(sn);
  const bar=sn.querySelector(".spybar"),A=[...sn.querySelectorAll("a")];let cur=null;
  const upd=()=>{const y=h.offsetHeight+40;let on=null;SP.forEach(([i])=>{const el=document.getElementById(i);if(el&&el.getBoundingClientRect().top<=y)on=i});

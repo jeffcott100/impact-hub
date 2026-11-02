@@ -1,27 +1,26 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=10"></head>
-<body class="app"><script src="data.js?v=6"></script><script src="portal.js?v=6"></script><main class="wrap">
-<div class="welcome"><h1 id="wh"></h1><p id="wp"></p></div>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=11"></head>
+<body class="app"><script src="data.js?v=9"></script><script src="portal.js?v=9"></script><main class="wrap">
+<div class="pagehead uni"><div><h1 id="wh"></h1><p id="wp"></p></div><a class="btn ghost" href="app-profile.html">Edit profile</a></div>
 <h3 style="margin:0 0 8px">Your profile</h3><div class="profile" id="pf"></div>
 <div class="two"><div>
 <div class="card"><h3>Your upcoming sessions</h3><div id="ys"></div></div>
 <div class="card" style="margin-top:16px"><h3>Sign up for upcoming sessions</h3><div id="ns"></div><p><a href="app-workshops.html">Browse all workshops →</a></p></div>
 <div class="card" style="margin-top:16px"><h3>Recommended Funding Opportunities for You</h3><div id="rg"></div><div class="foot" style="margin-top:10px"><a href="app-grants.html">Open funding finder →</a></div></div>
 </div><div>
-<div class="card bankcard bankside"><div class="bankhero"><div><h3>Banking with 100th Street Bank</h3><p>Accounts and cards for small businesses.</p></div><div class="ccard"><span class="chip"></span><b>HARBOR &amp; VINE CATERING</b><small>100th Street Bank · Business</small></div></div>
+<div class="card bankcard bankside"><div class="bankhero"><div><h3>Banking with 100th Street Bank</h3><p>Accounts and cards for small businesses.</p></div><div class="ccard"><span class="chip"></span><b class="ccname">HARBOR &amp; VINE CATERING</b><small>100th Street Bank · Business</small></div></div>
 <div class="bopts"><a href="app-banking.html#chk" data-bk="chk"><span class="bi">▣</span><b>Business checking</b><small>Everyday account for payments and payroll</small></a><a href="app-banking.html#sav" data-bk="sav"><span class="bi">◔</span><b>Business savings</b><small>Reserves for taxes and slow months</small></a><a href="app-banking.html#cc" data-bk="cc"><span class="bi">▭</span><b>Business credit card</b><small>Everyday spend, rewards, employee cards</small></a><a href="app-banking.html#loc" data-bk="loc"><span class="bi">↗</span><b>Line of credit &amp; loans</b><small>Working capital and equipment financing</small></a><a href="app-banking.html#dc" data-bk="dc"><span class="bi">◇</span><b>Business debit card</b><small>Linked to checking, with spend controls</small></a><a href="app-banking.html#mer" data-bk="mer"><span class="bi">⇄</span><b>Merchant services</b><small>Accept card and tap-to-pay</small></a></div>
 <div class="foot"><a class="btn sm" href="app-banking.html">Compare all accounts</a><a href="app-banking.html#talk">Talk to a banker</a></div></div>
 </div></div>
 <div class="card perkrow"><h3>Perks for members</h3><div id="pk"></div><p><a href="app-perks.html">All perks →</a></p></div>
 <script>
-wh.textContent=`Welcome back, ${ME.owner}`;wp.innerHTML=`${ME.biz} · ${ME.city} ${S()}`;
+function pageInit(){wh.textContent=`Welcome back, ${ME.owner}`;wp.innerHTML=`${ME.biz} · ${ME.city}`;document.querySelectorAll(".ccname").forEach(e=>e.textContent=ME.biz.toUpperCase());ren();renG();pfRender();applyBankRecs()}
 function ren(){const r=regd(),Y=SESSIONS.filter(s=>r.includes(s.id)).sort((a,b)=>a.d.localeCompare(b.d)),L=SESSIONS.filter(s=>!r.includes(s.id)).slice(0,3);
 ys.innerHTML=Y.length?Y.map(s=>`<div class="row"><span class="date">${fmtD(s.d)}</span><div style="flex:1"><b class="sname" onclick="sessionModal('${s.id}')" style="cursor:pointer">${s.n}</b><small>${s.tm} ET · ${s.f} · led by ${s.v}</small></div><button class="btn sm ghost" onclick="toggleReg('${s.id}');ren()">Cancel</button></div>`).join(""):`<p class="mut">Nothing scheduled yet. Pick a session below.</p>`;
 ns.innerHTML=(L.length?"":`<p class="mut">You're registered for everything coming up.</p>`)+L.map(s=>`<div class="row"><span class="date">${fmtD(s.d)}</span><div style="flex:1"><b class="sname" onclick="sessionModal('${s.id}')" style="cursor:pointer">${s.n}</b><small>${s.f}${s.m?" · "+s.m:""} · led by ${s.v}</small></div>${r.includes(s.id)?'<span class="tag">Registered</span>':`<button class="btn sm" onclick="sessionModal('${s.id}',true)">${s.f=="Workshop"?"Schedule":"Register"}</button>`}</div>`).join("")}
-ren();
-rg.innerHTML=sortRecommended(GRANTS.filter(g=>g.m==ME.market||g.m=="National"),getProfile()).slice(0,3).map(g=>`<div class="row"><div style="flex:1"><b>${g.n}</b><small>${g.who}</small><span class="rgact"><a class="btn sm ghost" href="${g.u||"app-grants.html"}"${g.u?' target="_blank" rel="noopener"':""}>Learn more</a><button class="btn sm" onclick="advisor('${g.n.replace(/'/g,"")}')">Schedule coaching</button></span></div><b>${g.a}</b></div>`).join("");
+function renG(){rg.innerHTML=sortRecommended(GRANTS,getProfile()).slice(0,3).map(g=>`<div class="row"><div style="flex:1"><b>${g.n}</b><small>${g.who}</small><span class="rgact"><a class="btn sm ghost" href="${g.u||"app-grants.html"}"${g.u?' target="_blank" rel="noopener"':""}>Learn more</a><button class="btn sm" onclick="advisor('${g.n.replace(/'/g,"")}')">Schedule coaching</button></span></div><b>${g.a}</b></div>`).join("")}
 pk.innerHTML=PERKS.filter(p=>!p.bank).slice(0,4).map(p=>`<div class="row perk">${plogo(p)}<div><b>${p.n}</b><small>${p.sv?p.sv+" · ":""}${p.o}</small></div></div>`).join("");
-function pfRender(){const p=getProfile();pf.innerHTML=[["Business",p.biz||ME.biz],["Location",ME.city],["Industry",p.industry],["Volunteer hours received","14"]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")+`<a class="btn sm ghost" href="app-profile.html" style="margin-left:auto">Edit profile</a>`}
-pfRender();applyBankRecs();
+function pfRender(){const p=getProfile();pf.innerHTML=[["Business",p.biz],["Location",ME.city],["Industry",p.industry],["Volunteer hours received","14"]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}
+pageInit();
 </script>
-</main><script src="chrome.js?v=6"></script></body></html>
+</main><script src="chrome.js?v=9"></script></body></html>

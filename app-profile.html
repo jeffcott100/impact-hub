@@ -1,17 +1,11 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit profile · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=10"></head>
-<body class="app"><script src="data.js?v=6"></script><script src="portal.js?v=6"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit profile · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=11"></head>
+<body class="app"><script src="data.js?v=9"></script><script src="portal.js?v=9"></script><main class="wrap">
 <div class="pagehead uni"><div><h1>Edit business profile</h1><p>Used to recommend workshops, funding and accelerators for you across the portal.</p></div><a class="btn ghost" href="app-home.html">Back to dashboard</a></div>
 <div class="pfpage"><form class="f" id="pfm"></form><div class="ok" id="pok"><b>Saved.</b> Recommendations across the portal are updated. <a href="app-grants.html">See recommended funding</a></div></div>
 <script>
-const p=getProfile();
-pfm.innerHTML=`<label class="full">Business name<input name="biz" value="${p.biz}" required></label>
-<label>Industry<select name="industry">${INDUSTRIES.map(i=>`<option ${i==p.industry?"selected":""}>${i}</option>`).join("")}</select></label>
-<label>ZIP code<input name="zip" value="${p.zip}" pattern="[0-9]{5}" required></label>
-<label>Employee count<input name="employees" type="number" min="0" value="${p.employees}" required></label>
-<label>Annual revenue<select name="revenue">${["Under $100K","$100K–$500K","$500K–$2M","Over $2M"].map(r=>`<option ${r==p.revenue?"selected":""}>${r}</option>`).join("")}</select></label>
-<label>Years in business<input name="years" type="number" min="0" value="${p.years}" required></label>
-<div class="full"><button class="btn">Save profile</button></div>`;
-addEventListener("load",()=>{pfm.onsubmit=e=>{e.preventDefault();const fd=new FormData(pfm);saveProfile({biz:fd.get("biz"),industry:fd.get("industry"),zip:fd.get("zip"),employees:+fd.get("employees"),revenue:fd.get("revenue"),years:+fd.get("years")});pok.style.display="block";pok.scrollIntoView({block:"nearest"})}});
+function pageInit(){const p=getProfile();pfm.innerHTML=profileFields(p)+`<div class="full"><button class="btn">Save profile</button> <a href="app-home.html?tour" class="lnk">Replay the portal tour</a></div>`;wireZip(pfm)}
+pageInit();pfm.classList.add("pform");
+pfm.onsubmit=e=>{e.preventDefault();saveProfile(readProfile(pfm));pok.style.display="block";pok.scrollIntoView({block:"nearest"})};
 </script>
-</main><script src="chrome.js?v=6"></script></body></html>
+</main><script src="chrome.js?v=9"></script></body></html>

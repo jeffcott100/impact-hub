@@ -1,13 +1,1 @@
-<!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Accelerators · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=10"></head>
-<body class="app"><script src="data.js?v=6"></script><script src="portal.js?v=6"></script><main class="wrap">
-<div class="pagehead uni"><div><h1>Accelerators &amp; incubators</h1><p>Programs that help you grow, from first-year incubators to scale-up accelerators, ranked for your business profile.</p></div></div>
-<div class="fbar uni"><select class="catsel" id="fm"><option value="">All industries</option></select></div><div class="grid" id="out"></div>
-<script>const kw=searchBox(document.querySelector(".fbar"),"Search programs: name, focus, location");kw.oninput=ren;
-PCATS.forEach(c=>fm.innerHTML+=`<option>${c}</option>`);fm.onchange=ren;
-ACCS.forEach(a=>{if(!a.k){const p=PROGRAMS.find(p=>p.n==a.n);a.k=p?p.k:""}});
-function ren(){const ap=LS.get("applied",[]),prof=getProfile();const L=sortRecommended(ACCS.filter(a=>hit(kw.value,a.n,a.org,a.m,a.len)&&(!fm.value||a.k==fm.value)),prof);
-out.innerHTML=L.map(a=>`<div class="card">${recScore(prof,a)>0?'<span class="tag" style="background:var(--rec);color:#fff;border-color:var(--rec)">Recommended</span>':""}<div class="alogo">${a.l?`<img src="${a.l}" alt="${a.n} logo">`:`<span class="wm">${a.w}</span>`}</div><span class="tag">${a.m}</span><h3 style="margin-top:6px">${a.n}${a.S?S():""}</h3><p>${a.org}</p><p>${a.len}</p><div class="foot"><a class="btn sm" href="${a.u||"#"}" target="_blank" rel="noopener">Learn more</a></div></div>`).join("")}
-function intro(n){const m=modal(`<h3>Request an intro: ${n}</h3><p class="mut">We'll pre-fill from your member profile.</p><form class="f" id="af"><label>Business<input value="${ME.biz}"></label><label>What do you want from the program?<textarea rows="3" required></textarea></label><button class="btn">Send intro request</button></form>`);
-af.onsubmit=e=>{e.preventDefault();LS.set("applied",[...LS.get("applied",[]),n]);m.style.display="none";ren()}}ren()</script>
-</main><script src="chrome.js?v=6"></script></body></html>
+<!doctype html><html lang="en"><head><meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><title>Funding &amp; Accelerators · Impact Hub Member Portal</title><meta http-equiv="refresh" content="0;url=app-grants.html?cat=acc"><script>location.replace("app-grants.html?cat=acc")</script></head><body><a href="app-grants.html?cat=acc">Funding &amp; accelerators</a></body></html>

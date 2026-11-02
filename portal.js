@@ -1,22 +1,44 @@
 // Member portal data. All fictional.
-const ME={biz:"Harbor & Vine Catering",owner:"Danielle",city:"Richmond, VA",via:"Union Kitchen Accelerator",viaSrc:"RVA",stage:"Growth (3 yrs, 6 employees)",market:"South Atlantic"};
-// Company profile used to drive "Recommended" ranking across the portal. Editable via Edit profile.
-function defaultProfile(){return{biz:ME.biz,industry:"Food & beverage",zip:"23220",employees:6,revenue:"$500K\u2013$2M",years:3}}
-function getProfile(){return LS.get("profile",defaultProfile())}
-function saveProfile(p){LS.set("profile",p)}
-const INDUSTRIES=["Community & main street","Education","Food & beverage","Social impact","Tech & startups"];
+// Company profile drives the whole portal (welcome, recommendations, page config). Created on first login.
+const DEMO_PROFILE={owner:"Danielle",biz:"Harbor & Vine Catering",industry:"Food & beverage",zip:"23220",city:"Richmond",state:"Virginia",employees:6,revenue:"$500K–$2M",years:3,gender:"",race:"",military:""};
+function defaultProfile(){return Object.assign({},DEMO_PROFILE)}
+function hasProfile(){return !!localStorage.getItem("ih_profile")}
+function getProfile(){return Object.assign(defaultProfile(),LS.get("profile",{}))}
+function saveProfile(p){LS.set("profile",Object.assign(getProfile(),p))}
+const STATE_DIV={"Connecticut":"New England","Maine":"New England","Massachusetts":"New England","New Hampshire":"New England","Rhode Island":"New England","Vermont":"New England","New Jersey":"Middle Atlantic","New York":"Middle Atlantic","Pennsylvania":"Middle Atlantic","Illinois":"East North Central","Indiana":"East North Central","Michigan":"East North Central","Ohio":"East North Central","Wisconsin":"East North Central","Iowa":"West North Central","Kansas":"West North Central","Minnesota":"West North Central","Missouri":"West North Central","Nebraska":"West North Central","North Dakota":"West North Central","South Dakota":"West North Central","Delaware":"South Atlantic","District of Columbia":"South Atlantic","Florida":"South Atlantic","Georgia":"South Atlantic","Maryland":"South Atlantic","North Carolina":"South Atlantic","South Carolina":"South Atlantic","Virginia":"South Atlantic","West Virginia":"South Atlantic","Alabama":"East South Central","Kentucky":"East South Central","Mississippi":"East South Central","Tennessee":"East South Central","Arkansas":"West South Central","Louisiana":"West South Central","Oklahoma":"West South Central","Texas":"West South Central","Arizona":"Mountain","Colorado":"Mountain","Idaho":"Mountain","Montana":"Mountain","Nevada":"Mountain","New Mexico":"Mountain","Utah":"Mountain","Wyoming":"Mountain","Alaska":"Pacific","California":"Pacific","Hawaii":"Pacific","Oregon":"Pacific","Washington":"Pacific"};
+const ME={get biz(){return getProfile().biz},get owner(){return getProfile().owner||"there"},get city(){const p=getProfile();return p.city?`${p.city}, ${(Object.entries(ST_ABBR).find(e=>e[1]==p.state)||[p.state])[0]}`:p.zip},get market(){return STATE_DIV[getProfile().state]||""},get state(){return getProfile().state}};
+// Small embedded ZIP table (works offline); anything else is looked up from a free ZIP API.
+const ZIPS={"23220":["Richmond","Virginia"],"75201":["Dallas","Texas"],"75204":["Dallas","Texas"],"77002":["Houston","Texas"],"02116":["Boston","Massachusetts"],"02118":["Boston","Massachusetts"],"10001":["New York","New York"],"11201":["Brooklyn","New York"],"20001":["Washington","District of Columbia"],"70112":["New Orleans","Louisiana"],"60601":["Chicago","Illinois"],"53202":["Milwaukee","Wisconsin"],"94110":["San Francisco","California"],"80302":["Boulder","Colorado"],"07302":["Jersey City","New Jersey"],"19801":["Wilmington","Delaware"],"30303":["Atlanta","Georgia"],"98101":["Seattle","Washington"]};
+async function zipLookup(z){if(ZIPS[z])return ZIPS[z];try{const r=await fetch("https://api.zippopotam.us/us/"+z);if(!r.ok)return null;const j=await r.json();const pl=j.places&&j.places[0];return pl?[pl["place name"],pl["state"]]:null}catch(e){return null}}
 function industryMatch(profIndustry,itemIndustry){if(!itemIndustry)return false;return itemIndustry===profIndustry}
-function recScore(prof,item){let sc=0;if(item.k&&industryMatch(prof.industry,item.k))sc+=2;else if(item.who&&prof.industry&&item.who.toLowerCase().includes(prof.industry.split(" ")[0].toLowerCase()))sc+=1;if(item.m&&item.m==ME.market)sc+=1;if(item.who&&/revenue|\$/.test(item.who)){/* light revenue hint, best-effort */}return sc}
+function itemStates(item){if(item.st&&Array.isArray(item.st))return item.st;const loc=(item.org||"")+" "+(item.c||"");const m=loc.match(/,\s*([A-Z]{2})\b/);return m&&ST_ABBR[m[1]]?[ST_ABBR[m[1]]]:[]}
+function recScore(prof,item){let sc=0;const txt=((item.who||"")+" "+(item.n||"")).toLowerCase();
+ if(item.k&&industryMatch(prof.industry,item.k))sc+=2;else if(prof.industry&&txt.includes(prof.industry.split(/[ ,]/)[0].toLowerCase()))sc+=1;
+ if(prof.state&&itemStates(item).includes(prof.state))sc+=2;else if(item.m&&item.m==STATE_DIV[prof.state])sc+=1;
+ if(prof.gender=="Woman"&&/women/.test(txt))sc+=2;if(prof.race=="Black or African American"&&/black/.test(txt))sc+=2;if(prof.race=="Hispanic or Latino"&&/latin/.test(txt))sc+=2;if(prof.military&&prof.military!="No military affiliation"&&/veteran|military/.test(txt))sc+=2;
+ return sc}
 function sortRecommended(list,prof){return [...list].sort((a,b)=>recScore(prof,b)-recScore(prof,a))}
-function profileModal(){const p=getProfile();const m=modal(`<h3>Edit business profile</h3><p class="mut">Used to recommend workshops, funding and accelerators for you.</p><form class="f" id="pfm">
-<label>Business name<input name="biz" value="${p.biz}" required></label>
-<label>Industry<select name="industry">${INDUSTRIES.map(i=>`<option ${i==p.industry?"selected":""}>${i}</option>`).join("")}</select></label>
-<label>ZIP code<input name="zip" value="${p.zip}" pattern="[0-9]{5}" required></label>
-<label>Employee count<input name="employees" type="number" min="0" value="${p.employees}" required></label>
-<label>Annual revenue<select name="revenue">${["Under $100K","$100K\u2013$500K","$500K\u2013$2M","Over $2M"].map(r=>`<option ${r==p.revenue?"selected":""}>${r}</option>`).join("")}</select></label>
-<label>Years in business<input name="years" type="number" min="0" value="${p.years}" required></label>
-<button class="btn">Save profile</button></form><div class="ok"><b>Saved.</b> Recommendations across the portal are updated.</div>`);
-pfm.onsubmit=e=>{e.preventDefault();const fd=new FormData(pfm);const np={biz:fd.get("biz"),industry:fd.get("industry"),zip:fd.get("zip"),employees:+fd.get("employees"),revenue:fd.get("revenue"),years:+fd.get("years")};saveProfile(np);pfm.style.display="none";pfm.nextElementSibling.style.display="block";setTimeout(()=>{if(typeof pfRender=="function")pfRender();if(typeof ren=="function")ren()},50)}}
+const REVS=["Under $100K","$100K–$500K","$500K–$2M","Over $2M"];
+const GENDERS=["Woman","Man","Non-binary","Prefer to self-describe","Prefer not to say"];
+const RACES=["American Indian or Alaska Native","Asian","Black or African American","Hispanic or Latino","Middle Eastern or North African","Native Hawaiian or Pacific Islander","White","Multiracial","Prefer not to say"];
+const MILS=["No military affiliation","Veteran","Active duty","National Guard / Reserve","Military spouse","Prefer not to say"];
+const sel=(name,list,v,blank)=>`<select name="${name}">${blank?`<option value="">${blank}</option>`:""}${list.map(i=>`<option ${i==v?"selected":""}>${i}</option>`).join("")}</select>`;
+// Shared profile form (used by Edit profile and first-login onboarding).
+function profileFields(p){return `<label>Your name<input name="owner" value="${p.owner||""}" required autocomplete="name"></label>
+<label>Business name<input name="biz" value="${p.biz||""}" required></label>
+<label>Industry${sel("industry",INDUSTRIES,p.industry)}</label>
+<label>ZIP code<input name="zip" value="${p.zip||""}" pattern="[0-9]{5}" maxlength="5" inputmode="numeric" required></label>
+<label>City<input name="city" value="${p.city||""}" required></label>
+<label>State<select name="state" required><option value="">Select</option>${Object.values(ST_ABBR).sort().map(x=>`<option ${x==p.state?"selected":""}>${x}</option>`).join("")}</select></label>
+<label>Employee count<input name="employees" type="number" min="0" value="${p.employees??""}" required></label>
+<label>Annual revenue${sel("revenue",REVS,p.revenue)}</label>
+<label>Years in business<input name="years" type="number" min="0" value="${p.years??""}" required></label>
+<fieldset class="full optid"><legend>Optional: about you</legend><p class="mut">Sharing these helps us recommend grants and programs set aside for specific founders. Never shared outside 100th Street Bank.</p>
+<div class="optgrid"><label>Gender${sel("gender",GENDERS,p.gender,"Choose (optional)")}</label><label>Race / ethnicity${sel("race",RACES,p.race,"Choose (optional)")}</label><label>Military status${sel("military",MILS,p.military,"Choose (optional)")}</label></div></fieldset>`}
+function wireZip(form){const z=form.querySelector("[name=zip]"),c=form.querySelector("[name=city]"),st=form.querySelector("[name=state]");let hint=document.createElement("small");hint.className="ziphint";z.parentNode.append(hint);
+ z.addEventListener("input",async()=>{const v=z.value.replace(/\D/g,"").slice(0,5);z.value=v;hint.textContent="";if(v.length<5)return;hint.textContent="Looking up…";const r=await zipLookup(v);if(z.value!==v)return;if(r){c.value=r[0];st.value=r[1];hint.textContent=`Filled in ${r[0]}, ${r[1]}`}else hint.textContent="Couldn't find that ZIP. Enter city and state."})}
+function readProfile(form){const fd=new FormData(form),o={};for(const [k,v] of fd.entries())o[k]=v;o.employees=+o.employees;o.years=+o.years;return o}
+function profileModal(){location.href="app-profile.html"}
 const TOPICS=["AI","Finance","Legal","Marketing","Operations","Technology"];
 const SMARKETS=["Greater Washington","Texas","Virginia"];
 const SESSIONS=[
@@ -66,6 +88,7 @@ const PERKS=[
 {n:"Slack",l:"img/logos/slack.svg",o:"Member discount on team messaging for growing staff",sv:"25% off Pro for 12 months",c:"Communication"},
 {n:"Microsoft 365 Business",l:"img/logos/m365.svg",o:"Member discount on Outlook, Teams, Word and Excel",sv:"$150 in credits",c:"Productivity"},
 {n:"Docusign",l:"img/logos/docusign.svg",o:"Member discount on e-signatures for contracts and invoices",sv:"30% off for 6 months",c:"Operations"}];
+ACCS.forEach(a=>{const p=PROGRAMS.find(p=>p.n==a.n);if(p){a.k=p.k;if(p.l)a.l=p.l}});
 GRANTS.sort((a,b)=>a.n.localeCompare(b.n));ACCS.sort((a,b)=>a.n.localeCompare(b.n));PERKS.sort((a,b)=>a.n.localeCompare(b.n));
 const LS={get:(k,d)=>JSON.parse(localStorage.getItem("ih_"+k)||JSON.stringify(d)),set:(k,v)=>localStorage.setItem("ih_"+k,JSON.stringify(v))};
 function regd(){return LS.get("reg",[])}
@@ -85,16 +108,27 @@ function bankRecs(){const p=getProfile(),r=new Set();
  if(p.employees>=5)r.add("dc"),r.add("mer");
  if(!r.size)r.add("chk");
  return r}
-function applyBankRecs(){const r=bankRecs();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("recbox",on);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="tag rectag";t.style.background="var(--rec)";t.style.color="#fff";t.style.borderColor="var(--rec)";t.textContent="Recommended for you";t.style.alignSelf="flex-start";t.style.marginBottom="8px";el.prepend(t)}else if(!on&&t)t.remove()})}
+function applyBankRecs(){const r=bankRecs();const parents=new Set();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("isrec",on);parents.add(el.parentNode);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="rectag";t.textContent="Recommended for you";el.prepend(t)}else if(!on&&t)t.remove()});
+ parents.forEach(pn=>{const k=[...pn.children];k.filter(e=>e.classList.contains("isrec")).reverse().forEach(e=>pn.prepend(e))})}
+// Calendar slot picker: month grid with available days; pick a day, then a time.
+function slotCal(el,slots,onPick){const by={};slots.forEach(t=>{const [d,tm]=t.split(" ");(by[d]=by[d]||[]).push(tm)});const days=Object.keys(by).sort();let cur=new Date(days[0]+"T12:00");cur.setDate(1);let pickD=null,pickT=null;
+ const draw=()=>{const y=cur.getFullYear(),mo=cur.getMonth(),first=new Date(y,mo,1).getDay(),n=new Date(y,mo+1,0).getDate();let g="";
+  for(let i=0;i<first;i++)g+="<span></span>";for(let d=1;d<=n;d++){const key=`${y}-${String(mo+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;g+=by[key]?`<button type="button" class="av${key==pickD?" on":""}" data-d="${key}">${d}</button>`:`<span class="na">${d}</span>`}
+  el.innerHTML=`<div class="scal"><div class="schd"><button type="button" class="pv" aria-label="Previous month">‹</button><b>${cur.toLocaleString("en-US",{month:"long",year:"numeric"})}</b><button type="button" class="nx" aria-label="Next month">›</button></div><div class="sgrid">${["S","M","T","W","T","F","S"].map(x=>`<i>${x}</i>`).join("")}${g}</div><div class="stimes">${pickD?`<small>Times on ${new Date(pickD+"T12:00").toDateString()}</small>`+by[pickD].map(t=>`<button type="button" class="tm${t==pickT?" on":""}" data-t="${t}">${t} ET</button>`).join(""):'<small>Pick a highlighted day to see open times.</small>'}</div></div>`;
+  el.querySelector(".pv").onclick=()=>{cur.setMonth(cur.getMonth()-1);draw()};el.querySelector(".nx").onclick=()=>{cur.setMonth(cur.getMonth()+1);draw()};
+  el.querySelectorAll(".av").forEach(b=>b.onclick=()=>{pickD=b.dataset.d;pickT=by[pickD].length==1?by[pickD][0]:null;draw();onPick(pickT?pickD+" "+pickT+" ET":null)});
+  el.querySelectorAll(".tm").forEach(b=>b.onclick=()=>{pickT=b.dataset.t;draw();onPick(pickD+" "+pickT+" ET")})};draw()}
+const notesBox=()=>`<label class="notes">What do you hope to get out of it? <span class="mut">(optional)</span><textarea id="snotes" maxlength="500" rows="3" placeholder="Goals, questions or anything the leader should know"></textarea><small class="cnt500"><span>0</span>/500</small></label>`;
+function wireNotes(m){const t=m.querySelector("#snotes");if(t)t.oninput=()=>m.querySelector(".cnt500 span").textContent=t.value.length}
 function sessionModal(id,register){const s=SESSIONS.find(x=>x.id==id);if(!s)return;const acc=ACCENTS[s.t]||"#0276B1";const r=regd().includes(s.id);
  const showSlots=s.f=="Workshop"&&register&&!r;
- const slotPicker=showSlots?`<label>Choose a time<select id="slotSel">${(SLOTS[s.id]||[s.d+" "+s.tm+" ET"]).map(t=>`<option>${t}</option>`).join("")}</select></label>`:"";
- const action=r?`<button class="btn sm ghost" type="button" id="cancelBtn">Cancel registration</button>`:register?(s.f=="Workshop"?`<button class="btn" id="goBtn">Confirm registration</button>`:`<button class="btn" id="goBtn">Register for ${fmtD(s.d).replace("<br>"," ")} · ${s.tm} ET</button>`):`<button class="btn" id="goBtn" data-open="1">${s.f=="Workshop"?"Schedule a time":"Register"}</button>`;
+ const action=r?`<button class="btn sm ghost" type="button" id="cancelBtn">Cancel registration</button>`:register?(s.f=="Workshop"?`<button class="btn" id="goBtn" disabled>Confirm registration</button>`:`<button class="btn" id="goBtn">Register for ${fmtD(s.d).replace("<br>"," ")} · ${s.tm} ET</button>`):`<button class="btn" id="goBtn" data-open="1">${s.f=="Workshop"?"Schedule a time":"Register"}</button>`;
  const m=modal(`<div style="border-top:5px solid ${acc};margin:-22px -22px 16px;border-radius:${10}px ${10}px 0 0;height:5px"></div><span class="tag">${s.t}</span><span class="tag">${s.f}</span><h3 style="margin-top:8px">${s.n}</h3>
- <p class="mut"><b>Led by</b> ${s.v}</p><p>${s.ds||""}</p><p><b>What you'll get:</b> ${s.gl||""}</p><p class="mut">${s.f=="Webinar"?`${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""} · fixed time, click to register`:"Workshop · pick a time that works for you"}</p>
- ${slotPicker}<div style="margin-top:14px">${action}</div><div class="ok"></div>`);
+ <p class="mut"><b>Led by</b> ${s.v}</p><p>${s.ds||""}</p><p><b>What you'll get:</b> ${s.gl||""}</p><p class="mut">${s.f=="Webinar"?`${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""} · fixed time`:"Workshop · pick a day and time that works for you"}</p>
+ ${showSlots?'<div id="slotCal"></div>':""}${register&&!r?notesBox():""}<div style="margin-top:14px">${action}</div><div class="ok"></div>`);
+ let picked=null;if(showSlots)slotCal(m.querySelector("#slotCal"),SLOTS[s.id]||[s.d+" "+s.tm+" ET"],v=>{picked=v;const g=m.querySelector("#goBtn");g.disabled=!v;g.textContent=v?"Confirm "+v.replace(/^(\d+)-(\d+)-(\d+)/,(x,y,mo,d)=>new Date(x+"T12:00").toDateString().slice(0,10)):"Confirm registration"});wireNotes(m);
  const close=()=>{m.style.display="none"};
- const gb=m.querySelector("#goBtn");if(gb)gb.onclick=()=>{if(gb.dataset.open){close();sessionModal(s.id,true);return}toggleReg(s.id);m.querySelector(".ok").innerHTML=`<b>${s.f=="Workshop"?"Registered for "+(m.querySelector("#slotSel")?m.querySelector("#slotSel").value:s.d):"Registered"}.</b> We'll send a confirmation email. (Prototype: nothing was sent.)`;m.querySelector(".ok").style.display="block";gb.style.display="none";if(typeof ren=="function")ren()};
+ const gb=m.querySelector("#goBtn");if(gb)gb.onclick=()=>{if(gb.dataset.open){close();sessionModal(s.id,true);return}toggleReg(s.id);m.querySelector(".ok").innerHTML=`<b>${s.f=="Workshop"?"Registered for "+(picked||s.d):"Registered"}.</b> We'll send a confirmation email. (Prototype: nothing was sent.)`;m.querySelector(".ok").style.display="block";gb.style.display="none";const sc=m.querySelector("#slotCal");if(sc)sc.style.display="none";const nt=m.querySelector(".notes");if(nt)nt.style.display="none";if(typeof ren=="function")ren()};
  const cb=m.querySelector("#cancelBtn");if(cb)cb.onclick=()=>{toggleReg(s.id);close();if(typeof ren=="function")ren()}}
 
 function advisor(n){const m=modal(`<h3>Schedule time with an advisor</h3><p class="mut">${n?"A 30-minute call on how to position your business for <b>"+n+"</b>.":"A 30-minute call on positioning your business for funding."}</p><form class="f" id="avf"><label>Preferred date<input type="date" required value="2026-11-03"></label><label>Time<select><option>Morning</option><option>Midday</option><option>Afternoon</option></select></label><label>Anything we should know?<textarea rows="3"></textarea></label><button class="btn">Request time</button></form><div class="ok"><b>Requested.</b> An advisor will confirm by email. (Prototype: nothing was sent.)</div>`);avf.onsubmit=e=>{e.preventDefault();avf.style.display="none";avf.nextElementSibling.style.display="block"}}
@@ -112,3 +146,22 @@ function statePicker(el,onChange){const ALL=Object.values(ST_ABBR).sort(),SEL=[]
  inp.onblur=()=>setTimeout(()=>sug.innerHTML="",100);
  inp.onkeydown=e=>{const li=[...sug.querySelectorAll("li")];if(e.key=="ArrowDown"||e.key=="ArrowUp"){e.preventDefault();if(!li.length)return;hi=(hi+(e.key=="ArrowDown"?1:-1)+li.length)%li.length;li.forEach((l,i)=>l.classList.toggle("hi",i==hi))}else if(e.key=="Enter"){e.preventDefault();if(li[hi])add(li[hi].dataset.s)}else if(e.key=="Backspace"&&!inp.value&&SEL.length){SEL.pop();draw();onChange(SEL)}};
  box.onclick=e=>{if(e.target==box||e.target==chips)inp.focus()};return SEL}
+
+// First login: create a business profile, then a short orientation tour.
+const TOUR=[["Welcome to your Impact Hub","This is your member portal from 100th Street Bank. Everything here is tuned to the business profile you just created.",null],
+["Home","Your dashboard: upcoming sessions, funding picked for you, and banking options in one place.",'nav.main a[href="app-home.html"]'],
+["Workshops","Browse webinars and workshops led by bank volunteers. Pick a day and time on the calendar and tell the leader what you hope to get out of it.",'nav.main a[href="app-workshops.html"]'],
+["Funding & Accelerators","Grants, loans, competitions and incubator/accelerator programs in one list. Filter by category; the best fits for you are at the top.",'nav.main a[href="app-grants.html"]'],
+["Banking","Accounts, cards and credit, with a 100th Street Bank assistant and bankers ready to help.",'nav.main a[href="app-banking.html"]'],
+["Perks","Member discounts on tools you already use, like payroll, bookkeeping and e-commerce.",'nav.main a[href="app-perks.html"]'],
+["Look for “Recommended”","Anything marked Recommended matches your industry, location or profile and is listed first. Update your profile any time to change your recommendations.",null]];
+function startTour(i=0){document.querySelectorAll(".tourhl").forEach(e=>e.classList.remove("tourhl"));let t=document.getElementById("tour");if(i>=TOUR.length){if(t)t.remove();LS.set("toured",1);return}
+ if(!t){t=document.createElement("div");t.id="tour";document.body.append(t)}const [h,b,sel]=TOUR[i];const el=sel&&document.querySelector(sel);if(el&&el.offsetParent){el.classList.add("tourhl");el.scrollIntoView({block:"nearest",inline:"center"})}
+ t.innerHTML=`<div class="tbox" role="dialog" aria-label="${h}"><small>${i+1} of ${TOUR.length}</small><h3>${h}</h3><p>${b}</p><div class="tdots">${TOUR.map((_,k)=>`<i class="${k==i?"on":""}"></i>`).join("")}</div><div class="tact"><button class="lnk" id="tskip">Skip tour</button>${i?'<button class="btn sm ghost" id="tback">Back</button>':""}<button class="btn sm" id="tnext">${i==TOUR.length-1?"Get started":"Next"}</button></div></div>`;
+ tskip.onclick=()=>startTour(TOUR.length);tnext.onclick=()=>startTour(i+1);const bk=document.getElementById("tback");if(bk)bk.onclick=()=>startTour(i-1)}
+function onboarding(){const m=modal(`<div class="onb"><span class="eyebrow dk">Step 1 of 2 · Create your business profile</span><h2>Welcome to the Impact Hub</h2><p class="mut">Tell us about your business so we can set up your portal and recommend the right workshops, funding and programs. A restaurant in Dallas and a wedding cake shop in Boston will each see different recommendations.</p>
+<form class="f pform" id="onbf">${profileFields({industry:"Food & beverage",revenue:REVS[1]})}<div class="full onbact"><button class="btn">Create profile</button><button type="button" class="lnk" id="onbdemo">Skip and use the demo business</button></div></form></div>`);
+ m.classList.add("onbm");m.onclick=null;wireZip(onbf);
+ const done=p=>{saveProfile(p);m.style.display="none";m.classList.remove("onbm");if(typeof pageInit=="function")pageInit();startTour(0)};
+ onbf.onsubmit=e=>{e.preventDefault();done(readProfile(onbf))};onbdemo.onclick=()=>done(defaultProfile())}
+addEventListener("load",()=>{if(!hasProfile())onboarding();else if(new URLSearchParams(location.search).has("tour"))startTour(0)});
