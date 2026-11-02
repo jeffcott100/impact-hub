@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=11"></head>
-<body class="app"><script src="data.js?v=9"></script><script src="portal.js?v=9"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=13"></head>
+<body class="app"><script src="data.js?v=13"></script><script src="portal.js?v=13"></script><main class="wrap">
 <div class="pagehead uni"><div><h1>Workshops &amp; sessions</h1><p>Webinars and hands-on workshops led by 100th Street Bank associate volunteers. Free for members.</p></div><button class="btn" onclick="book()">Book 1:1 office hours</button></div>
 <div class="fbar uni"><select id="ft"></select><select id="ff"></select><div class="tabs" style="margin:0"><button class="on" id="vl">List</button><button id="vc">Calendar</button></div></div>
 <div id="out"></div>
@@ -10,7 +10,7 @@ vl.onclick=()=>{view="list";vl.classList.add("on");vc.classList.remove("on");ren
 [ft,ff].forEach(s=>s.onchange=ren);
 function btn(s){const r=regd().includes(s.id);if(r)return `<button class="btn sm done" onclick="toggleReg('${s.id}');ren()">${s.f=="Workshop"?"Scheduled ✓":"Registered ✓"}</button>`;return `<button class="btn sm" onclick="sessionModal('${s.id}',true);">${s.f=="Workshop"?"Schedule a time":"Register"}</button>`}
 function ren(){const L=SESSIONS.filter(s=>hit(kw.value,s.t,s.n,s.m,s.f)&&(!ft.value||s.t==ft.value)&&(!ff.value||s.f==ff.value));
-if(view=="list"){out.innerHTML=L.length?`<div class="grid wgrid">${L.map(s=>`<div class="card wcard${regd().includes(s.id)?" regd":""}"><span class="tag">${s.t}</span><span class="tag">${s.f}</span><h3 style="margin-top:6px"><a href="#" onclick="event.preventDefault();sessionModal('${s.id}')">${s.n}</a></h3><p class="mut" style="margin:0 0 4px">Led by ${s.v}</p><p>${s.apply?"Next cohort starts ":""}${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""}</p><div class="foot">${btn(s)}</div></div>`).join("")}</div>`:"<p>No sessions match. Try fewer filters.</p>";return}
+if(view=="list"){out.innerHTML=L.length?`<div class="grid wgrid">${L.map(s=>`<div class="card wcard${regd().includes(s.id)?" regd":""}"><div class="tagrow"><span class="tag">${s.t}</span><span class="tag">${s.f}</span></div><h3 style="margin-top:6px"><a href="#" onclick="event.preventDefault();sessionModal('${s.id}')">${s.n}</a></h3><p class="mut" style="margin:0 0 4px">Led by ${s.v}</p><p>${s.apply?"Next cohort starts ":""}${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""}</p><div class="foot">${btn(s)}</div></div>`).join("")}</div>`:"<p>No sessions match. Try fewer filters.</p>";return}
 let h="";[[2026,9,"October"],[2026,10,"November"],[2026,11,"December"]].forEach(([y,mo,name])=>{const first=new Date(y,mo,1).getDay(),n=new Date(y,mo+1,0).getDate();
 const ev=L.filter(s=>+s.d.slice(5,7)==mo+1);if(!ev.length)return;h+=`<h3 style="margin-top:12px">${name} ${y}</h3><div class="cal">`+["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d=>`<div class="h">${d}</div>`).join("")+"<div style='background:none'></div>".repeat(first);
 for(let d=1;d<=n;d++){h+=`<div>${d}${ev.filter(s=>+s.d.slice(8)==d).map(s=>`<span class="ev" title="${s.n}">${regd().includes(s.id)?"✓ ":""}${s.t}</span>`).join("")}</div>`}h+="</div>"});out.innerHTML=h||"<p>No sessions match.</p>"}
@@ -20,4 +20,4 @@ function book(){let pk=null;const m=modal(`<h3>Book 1:1 office hours</h3><p clas
 slotCal(document.getElementById("ohcal"),OH,v=>{pk=v;bfb.disabled=!v;bfb.textContent=v?"Request "+new Date(v.slice(0,10)+"T12:00").toDateString().slice(0,10)+" · "+v.slice(11):"Pick a day and time"});wireNotes(m);
 bf.onsubmit=e=>{e.preventDefault();bf.style.display="none";bf.nextElementSibling.style.display="block"}}
 </script>
-</main><script src="chrome.js?v=9"></script></body></html>
+</main><script src="chrome.js?v=13"></script></body></html>

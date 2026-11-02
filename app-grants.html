@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Funding &amp; Accelerators · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=11"></head>
-<body class="app"><script src="data.js?v=9"></script><script src="portal.js?v=9"></script><main class="wrap">
-<div class="pagehead uni"><div><h1>Funding &amp; accelerators</h1><p>Grants, loans and competitions plus incubator and accelerator programs open to Hub members. The best fits for your business profile are listed first.</p></div></div>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Funding &amp; Programs · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=13"></head>
+<body class="app"><script src="data.js?v=13"></script><script src="portal.js?v=13"></script><main class="wrap">
+<div class="pagehead uni"><div><h1>Funding &amp; Programs</h1><p>Grants, loans and competitions plus incubator and accelerator programs open to Hub members. The best fits for your business profile are listed first.</p></div></div>
 <div class="tabs cattabs" id="ctabs" role="tablist"><button data-c="" class="on">All</button><button data-c="fund">Funding</button><button data-c="acc">Incubators &amp; accelerators</button></div>
 <div class="fbar uni"><select id="fy"></select><select id="fm"></select></div><div class="grid" id="out"></div>
 <script>
@@ -14,13 +14,13 @@ const ITEMS=[...GRANTS.map(g=>({...g,cat:"fund"})),...ACCS.map(a=>({...a,cat:"ac
 const REC='<span class="rectag">Recommended for you</span>';
 const logo=x=>`<div class="alogo">${x.l?`<img src="${x.l}" alt="${x.n} logo">`:`<span class="wm">${x.w}</span>`}</div>`;
 function card(x,prof){const rec=recScore(prof,x)>=2;
- if(x.cat=="fund")return `<div class="card ucard">${rec?REC:""}${logo(x)}<span class="tag">Funding · ${x.type}</span><span class="tag">${x.st=="ALL"?"National":x.st.length>3?x.st.length+" states":x.st.join(", ")}</span><h3>${x.n}${x.S?S():""}</h3><p><b style="color:var(--navy)">${x.a}</b></p><p>${x.who}${x.note?". "+x.note:""}</p><div class="foot"><a class="btn sm" href="${x.u||"#"}" target="_blank" rel="noopener">Learn more</a><button class="btn sm ghost" onclick="advisor('${x.n.replace(/'/g,"")}')">Talk to an advisor</button></div></div>`;
- return `<div class="card ucard">${rec?REC:""}${logo(x)}<span class="tag">${x.type}</span><span class="tag">${x.k||""}</span><h3>${x.n}</h3><p>${x.org}</p><p>${x.len}</p><div class="foot"><a class="btn sm" href="${x.u||"#"}" target="_blank" rel="noopener">Learn more</a></div></div>`}
+ if(x.cat=="fund")return `<div class="card ucard">${rec?REC:""}${logo(x)}<div class="tagrow"><span class="tag">Funding · ${x.type}</span><span class="tag">${x.st=="ALL"?"National":x.st.length>3?x.st.length+" states":x.st.join(", ")}</span></div><h3>${x.n}${x.S?S():""}</h3><p><b style="color:var(--navy)">${x.a}</b></p><p>${x.who}${x.note?". "+x.note:""}</p><div class="foot"><a class="btn sm" href="${x.u||"#"}" target="_blank" rel="noopener">Learn more</a><button class="btn sm ghost" onclick="advisor('${x.n.replace(/'/g,"")}')">Talk to an advisor</button></div></div>`;
+ return `<div class="card ucard">${rec?REC:""}${logo(x)}<div class="tagrow"><span class="tag">${x.type}</span>${x.k?`<span class="tag">${x.k}</span>`:""}</div><h3>${x.n}</h3><p>${x.org}</p><p>${x.len}</p><div class="foot"><a class="btn sm" href="${x.u||"#"}" target="_blank" rel="noopener">Learn more</a></div></div>`}
 function ren(){const prof=getProfile();
- const L=ITEMS.filter(x=>(!CAT||x.cat==CAT)&&hit(kw.value,x.n,x.who||"",x.a||"",x.type,x.org||"",x.len||"",x.k||"",x.note||"")&&(!fy.value||x.type==fy.value)&&(!fm.value||x.k==fm.value||(x.cat=="fund"&&!x.k))&&(!SELS.length||(x.st=="ALL")||SELS.some(s=>itemStates(x).includes(s))));
+ const L=ITEMS.filter(x=>(!CAT||x.cat==CAT)&&hit(kw.value,x.n,x.who||"",x.a||"",x.type,x.org||"",x.len||"",x.k||"",x.note||"")&&(!fy.value||x.type==fy.value)&&(!fm.value||industryMatch(fm.value,x.k)||(x.cat=="fund"&&!x.k))&&(!SELS.length||(x.st=="ALL")||SELS.some(s=>itemStates(x).includes(s))));
  const S2=[...L].sort((a,b)=>(recScore(prof,b)-recScore(prof,a))||a.n.localeCompare(b.n));
  out.innerHTML=S2.map(x=>card(x,prof)).join("")||"<p>Nothing matches. Try another category, state or fewer filters.</p>"}
 function pageInit(){ren()}ren();
 </script>
 <p class="src">Amounts and eligibility for real programs reflect the cited public article and may have changed; check with the program before applying.</p>
-</main><script src="chrome.js?v=9"></script></body></html>
+</main><script src="chrome.js?v=13"></script></body></html>
