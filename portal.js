@@ -85,7 +85,7 @@ function bankRecs(){const p=getProfile(),r=new Set();
  if(p.employees>=5)r.add("dc"),r.add("mer");
  if(!r.size)r.add("chk");
  return r}
-function applyBankRecs(){const r=bankRecs();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("recbox",on);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="tag rectag";t.style.background="#1b7a3d";t.style.color="#fff";t.style.borderColor="#1b7a3d";t.textContent="Recommended for you";(el.querySelector("small")||el).after(t)}else if(!on&&t)t.remove()})}
+function applyBankRecs(){const r=bankRecs();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("recbox",on);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="tag rectag";t.style.background="#1b7a3d";t.style.color="#fff";t.style.borderColor="#1b7a3d";t.textContent="Recommended for you";t.style.alignSelf="flex-start";t.style.marginBottom="8px";el.prepend(t)}else if(!on&&t)t.remove()})}
 function sessionModal(id,register){const s=SESSIONS.find(x=>x.id==id);if(!s)return;const acc=ACCENTS[s.t]||"#0276B1";const r=regd().includes(s.id);
  const showSlots=s.f=="Workshop"&&register&&!r;
  const slotPicker=showSlots?`<label>Choose a time<select id="slotSel">${(SLOTS[s.id]||[s.d+" "+s.tm+" ET"]).map(t=>`<option>${t}</option>`).join("")}</select></label>`:"";

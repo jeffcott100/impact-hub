@@ -164,9 +164,14 @@ function drawMap(){
     const show=()=>tipAt(b.querySelector("circle"),`<b>${b.dataset.r}</b><div>${L.length} organizations in ${new Set(L.map(d=>d.c)).size} cities</div><div class="amt">${fmt(tot)}+</div><small>Click to zoom in</small>`);
     b.addEventListener("mouseenter",show);b.addEventListener("focus",show);b.addEventListener("click",e=>{e.stopPropagation();tip.style.display="none";fit(L)})});return}
   rgG.innerHTML="";const r=7/Math.sqrt(z);
-  const intro=!introDone&&R=="All"&&K=="All";if(intro)introDone=true;
-  g.innerHTML=all.map((d,oi)=>{const [x,y]=pos(d,all),delay=intro?(oi*0.045).toFixed(3):0;return `<circle class="${intro?"drop":""} ${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" style="${intro?`animation-delay:${delay}s;`:""}stroke-width:${1.5/Math.sqrt(z)}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" tabindex="0"/>`}).join("");
-  if(intro){const seen=new Set();all.forEach((d,oi)=>{if(seen.has(d.s))return;seen.add(d.s);const p=svg.querySelector(`.st path[data-r]`);const paths=[...svg.querySelectorAll(".st path")];const match=US_STATES.find(s2=>s2.n==d.s);if(!match)return;const idx=US_STATES.indexOf(match);const el=paths[idx];if(el){el.classList.add("dropHl");el.style.animationDelay=(oi*0.045).toFixed(3)+"s"}})}
+  const intro=!introDone&&R=="All"&&K=="All";
+  g.innerHTML=all.map((d,oi)=>{const [x,y]=pos(d,all);return `<circle class="${intro?"pend":""} ${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" style="stroke-width:${1.5/Math.sqrt(z)}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" tabindex="0"/>`}).join("");
+  if(intro){const paths=[...svg.querySelectorAll(".st path")],byName={};US_STATES.forEach((s2,i)=>byName[s2.n]=paths[i]);
+   paths.forEach(p=>{if(p.classList.contains("fp")){p.classList.remove("fp");p.classList.add("fpw")}});
+   const cs=[...g.querySelectorAll("circle.pend")].sort((p,q)=>(+p.getAttribute("cx"))-(+q.getAttribute("cx")));
+   const play=()=>{introDone=true;const step=Math.max(25,Math.min(70,3200/cs.length));cs.forEach((c,i)=>setTimeout(()=>{c.classList.remove("pend");c.classList.add("drop");const p=byName[DOTS[c.dataset.i].s];if(p&&!p.classList.contains("fp")){p.classList.remove("fpw");p.classList.add("fp","dropHl")}},i*step));
+    setTimeout(()=>paths.forEach(p=>{if(p.classList.contains("fpw")){p.classList.remove("fpw");p.classList.add("fp")}}),cs.length*step+600)};
+   if(window.__mo)window.__mo.disconnect();const mo=window.__mo=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){mo.disconnect();play()}},{threshold:.35});mo.observe(svg)}
   g.querySelectorAll("circle").forEach(c=>{const show=()=>{const d=DOTS[c.dataset.i];tipAt(c,`<b>${d.o}</b><div>${d.c} · ${d.m}</div><div><span class="tag">${d.k}</span></div><div>${d.p}</div><div class="amt">${fmt(d.a)}</div>`);g.querySelectorAll(".on").forEach(z=>z.classList.remove("on"));c.classList.add("on")};
    c.addEventListener("mouseenter",show);c.addEventListener("focus",show);c.addEventListener("click",e=>{e.stopPropagation();show()})});}
  const pt=e=>{const b=svg.getBoundingClientRect();return[V.x+(e.clientX-b.left)/b.width*V.w,V.y+(e.clientY-b.top)/b.height*V.w*H/W]};

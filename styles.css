@@ -284,3 +284,17 @@ nav.spy a{white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.88
 @keyframes dotdrop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.6);opacity:1}100%{transform:scale(1);opacity:1}}
 #usmap .st path.dropHl{animation:stHl 1.1s ease-out both}
 @keyframes stHl{0%{fill:#c9dae6}35%{fill:#8fb4cc}100%{fill:#c9dae6}}
+
+/* wave8 */
+#usmap circle.pend{opacity:0}
+#usmap .st path.dropHl{animation:stHl8 .9s ease-out both}
+@keyframes stHl8{0%{filter:brightness(1.6)}40%{filter:brightness(.75)}100%{filter:none}}
+@media(min-width:801px){.joinv5{align-items:stretch}.collage{contain:size;align-self:stretch;grid-template-rows:repeat(4,minmax(0,1fr));grid-auto-rows:auto;height:auto}.collage img{aspect-ratio:auto;height:100%;min-height:0}}
+.marq{overflow:hidden;width:100%;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marq .mtrack{display:flex;flex-wrap:nowrap;align-items:center;gap:48px;width:max-content;animation:marq 40s linear infinite}
+.marq:hover .mtrack{animation-play-state:paused}
+.marq .mtrack>*{flex:0 0 auto}
+.marq .mtrack img{height:44px;width:auto;max-width:170px;object-fit:contain}
+#netlogos.marq .mtrack img{height:34px}
+@keyframes marq{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@media(prefers-reduced-motion:reduce){.marq .mtrack{animation-duration:120s}}
