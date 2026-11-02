@@ -137,6 +137,7 @@ DOTS.forEach(d=>{d.k=/black|bipoc|minority|immigrant|latin|equity|diverse|women/
 const fmt=a=>a==null?"Amount not disclosed":a>=1e6?"$"+(a/1e6).toFixed(2).replace(/\.?0+$/,"")+"M":"$"+(a/1e3).toFixed(0)+"K";
 const MAPREG=REGIONS;
 // Region view by default; zoom in (wheel, +, or click a region) to see every city dot.
+let introDone=false;
 function drawMap(){
  const svg=document.getElementById("usmap"),tip=document.getElementById("tip"),W=975,H=610;
  const dotted=new Set(DOTS.map(d=>d.s));
@@ -163,7 +164,9 @@ function drawMap(){
     const show=()=>tipAt(b.querySelector("circle"),`<b>${b.dataset.r}</b><div>${L.length} organizations in ${new Set(L.map(d=>d.c)).size} cities</div><div class="amt">${fmt(tot)}+</div><small>Click to zoom in</small>`);
     b.addEventListener("mouseenter",show);b.addEventListener("focus",show);b.addEventListener("click",e=>{e.stopPropagation();tip.style.display="none";fit(L)})});return}
   rgG.innerHTML="";const r=7/Math.sqrt(z);
-  g.innerHTML=all.map(d=>{const [x,y]=pos(d,all);return `<circle class="${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" style="stroke-width:${1.5/Math.sqrt(z)}" tabindex="0"/>`}).join("");
+  const intro=!introDone&&R=="All"&&K=="All";if(intro)introDone=true;
+  g.innerHTML=all.map((d,oi)=>{const [x,y]=pos(d,all),delay=intro?(oi*0.045).toFixed(3):0;return `<circle class="${intro?"drop":""} ${R!="All"&&d.m!=R?"dim":R!="All"?"inr":""}" style="${intro?`animation-delay:${delay}s;`:""}stroke-width:${1.5/Math.sqrt(z)}" data-i="${DOTS.indexOf(d)}" cx="${x}" cy="${y}" r="${R!="All"&&d.m!=R?r*.6:R!="All"?r*1.25:r}" tabindex="0"/>`}).join("");
+  if(intro){const seen=new Set();all.forEach((d,oi)=>{if(seen.has(d.s))return;seen.add(d.s);const p=svg.querySelector(`.st path[data-r]`);const paths=[...svg.querySelectorAll(".st path")];const match=US_STATES.find(s2=>s2.n==d.s);if(!match)return;const idx=US_STATES.indexOf(match);const el=paths[idx];if(el){el.classList.add("dropHl");el.style.animationDelay=(oi*0.045).toFixed(3)+"s"}})}
   g.querySelectorAll("circle").forEach(c=>{const show=()=>{const d=DOTS[c.dataset.i];tipAt(c,`<b>${d.o}</b><div>${d.c} · ${d.m}</div><div><span class="tag">${d.k}</span></div><div>${d.p}</div><div class="amt">${fmt(d.a)}</div>`);g.querySelectorAll(".on").forEach(z=>z.classList.remove("on"));c.classList.add("on")};
    c.addEventListener("mouseenter",show);c.addEventListener("focus",show);c.addEventListener("click",e=>{e.stopPropagation();show()})});}
  const pt=e=>{const b=svg.getBoundingClientRect();return[V.x+(e.clientX-b.left)/b.width*V.w,V.y+(e.clientY-b.top)/b.height*V.w*H/W]};
