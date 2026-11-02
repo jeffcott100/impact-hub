@@ -108,6 +108,10 @@ const ACCS=[
 {n:"La Cocina",w:"LC",org:"Food business incubator, San Francisco, CA",m:"Pacific",st:"Idea / early stage",len:"Kitchen incubator",u:"https://www.lacocinasf.org/"},
 {n:"mHUB",l:"img/logos/mhub.png",org:"mHUB Accelerator, Chicago, IL",m:"East North Central",st:"Early stage",len:"Hardtech accelerator",u:"https://mhub.org/accelerator"},
 {n:"Social Enterprise Greenhouse",l:"img/logos/segreenhouse.png",org:"SEG Accelerator, Providence, RI",m:"New England",st:"Early stage",len:"Social enterprise accelerator",u:"https://segri.org/accelerator/"},
+{n:"Delaware Innovation Space",w:"DIS",org:"Science Inc. Accelerator, Wilmington, DE",m:"South Atlantic",st:"Early stage",len:"Science startup accelerator + labs",u:"https://www.delawareinnovationspace.org/"},
+{n:"DC Chamber of Commerce",w:"DCC",who:"Diverse-led, established DC small businesses",org:"Small Business Accelerator Program, Washington, DC",m:"South Atlantic",st:"Established",len:"Weekly workshops + 1-on-1 mentoring",u:"https://dcchamber.org/small-business-accelerator/"},
+{n:"1863 Ventures (New Majority Ventures)",w:"1863",who:"Black, Latino and other New Majority founders",org:"1863 Accelerator, Washington, DC",m:"South Atlantic",st:"Growth",len:"Coaching + capital access",u:"https://www.newmajorityventures.net/"},
+{n:"Launcher (West End Neighborhood House)",w:"LCH",org:"Launcher Entrepreneurship Program, Wilmington, DE",m:"South Atlantic",st:"Idea / early stage",len:"12 weeks + 1-on-1 mentoring",u:"https://launcherde.org/"},
 {n:"Boomtown",l:"img/logos/boomtown.png",org:"Boomtown Accelerator, Boulder, CO",m:"Mountain",st:"Early stage",len:"Startup accelerator",u:"https://boomtownaccelerators.com/"}];
 const PERKS=[
 {n:"Claude or Gemini AI",l:"img/logos/claude.svg",o:"Member discount on AI assistant access for your team",sv:"20% off team plans for 12 months",c:"AI"},
