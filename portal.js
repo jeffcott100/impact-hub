@@ -24,7 +24,7 @@ const REVS=["Under $100K","$100K–$500K","$500K–$2M","Over $2M"];
 const GENDERS=["Woman","Man","Non-binary","Prefer to self-describe","Prefer not to say"];
 const RACES=["American Indian or Alaska Native","Asian","Black or African American","Hispanic or Latino","Middle Eastern or North African","Native Hawaiian or Pacific Islander","White","Multiracial","Prefer not to say"];
 const MILS=["No military affiliation","Veteran","Active duty","National Guard / Reserve","Military spouse","Prefer not to say"];
-const sel=(name,list,v,blank)=>`<select name="${name}">${blank?`<option value="">${blank}</option>`:""}${AZ(list).map(i=>`<option ${i==v?"selected":""}>${i}</option>`).join("")}</select>`;
+const sel=(name,list,v,blank,keep)=>`<select name="${name}">${blank?`<option value="">${blank}</option>`:""}${(keep?list:AZ(list)).map(i=>`<option ${i==v?"selected":""}>${i}</option>`).join("")}</select>`;
 // Shared profile form (used by Edit profile and first-login onboarding).
 function profileFields(p){return `<label>Your name<input name="owner" value="${p.owner||""}" required autocomplete="name"></label>
 <label>Business name<input name="biz" value="${p.biz||""}" required></label>
@@ -33,12 +33,12 @@ function profileFields(p){return `<label>Your name<input name="owner" value="${p
 <label>City<input name="city" value="${p.city||""}" required></label>
 <label>State<select name="state" required><option value="">Select</option>${Object.values(ST_ABBR).sort().map(x=>`<option ${x==p.state?"selected":""}>${x}</option>`).join("")}</select></label>
 <label>Employee count<input name="employees" type="number" min="0" value="${p.employees??""}" required></label>
-<label>Annual revenue${sel("revenue",REVS,p.revenue)}</label>
+<label>Annual revenue${sel("revenue",REVS,p.revenue,"",1)}</label>
 <label>Years in business<input name="years" type="number" min="0" value="${p.years??""}" required></label>
 <fieldset class="full optid"><legend>Optional: about you</legend><p class="mut">Sharing these helps us recommend grants and programs set aside for specific founders. Never shared outside 100th Street Bank.</p>
 <div class="optgrid"><label>Gender${sel("gender",GENDERS,p.gender,"Choose (optional)")}</label><label>Race / ethnicity${sel("race",RACES,p.race,"Choose (optional)")}</label><label>Military status${sel("military",MILS,p.military,"Choose (optional)")}</label></div></fieldset>`}
 function wireZip(form){const z=form.querySelector("[name=zip]"),c=form.querySelector("[name=city]"),st=form.querySelector("[name=state]");let hint=document.createElement("small");hint.className="ziphint";z.parentNode.append(hint);
- const go=async()=>{const v=z.value.replace(/\D/g,"").slice(0,5);z.value=v;hint.textContent="";if(v.length<5)return;hint.textContent="Looking up…";const r=await zipLookup(v);if(z.value!==v)return;if(r){c.value=r[0];st.value=r[1];hint.textContent=`Filled in ${r[0]}, ${r[1]}`}else hint.textContent="Couldn't find that ZIP. Enter city and state."};
+ const go=async()=>{const v=z.value.replace(/\D/g,"").slice(0,5);z.value=v;hint.textContent="";if(v.length<5)return;hint.textContent="Looking up…";const r=await zipLookup(v);if(z.value!==v)return;if(r){c.value=r[0];st.value=r[1];hint.textContent=`Filled in ${r[0]}, ${r[1]}`;form.dispatchEvent(new CustomEvent("zipfilled"))}else hint.textContent="Couldn't find that ZIP. Enter city and state."};
  z.addEventListener("input",go);z.addEventListener("change",go);if(z.value.length==5)go()}
 function readProfile(form){const fd=new FormData(form),o={};for(const [k,v] of fd.entries())o[k]=v;o.employees=+o.employees;o.years=+o.years;return o}
 function profileModal(){location.href="app-profile.html"}
