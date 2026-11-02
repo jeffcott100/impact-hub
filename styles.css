@@ -425,3 +425,5 @@ header.top:has(.tourhl){z-index:22}
 .pfpage .optgrid{grid-template-columns:repeat(3,1fr)}
 @media(max-width:900px){.pfpage form.f.pform{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.pfpage form.f.pform{grid-template-columns:1fr}}
+
+@media(max-width:600px){.modal>div *{min-width:0}.mgrid{grid-template-columns:minmax(0,1fr)}.modal form.f{grid-template-columns:minmax(0,1fr)}.modal select,.modal input,.modal textarea{max-width:100%}}
