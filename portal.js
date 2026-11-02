@@ -189,7 +189,7 @@ function statePicker(el,onChange){const ALL=Object.values(ST_ABBR).sort(),SEL=[]
 // First login: create a business profile, then a short orientation tour.
 const TOUR=[["Welcome to your Impact Hub","This is your member portal from 100th Street Bank. Everything here is tuned to the business profile you just created.",null],
 ["Home","Your dashboard: upcoming sessions, funding picked for you, and banking options in one place.",'nav.main a[href="app-home.html"]'],
-["Workshops","Browse webinars and workshops led by bank volunteers. Pick a day and time on the calendar and tell the leader what you hope to get out of it.",'nav.main a[href="app-workshops.html"]'],
+["Workshops","Browse webinars and workshops led by bank volunteers. Book a session and tell the leader what you hope to get out of it.",'nav.main a[href="app-workshops.html"]'],
 ["Funding & Programs","Grants, loans, competitions and incubator/accelerator programs in one list. Filter by category; the best fits for you are at the top.",'nav.main a[href="app-grants.html"]'],
 ["Banking","Accounts, cards and credit, with a 100th Street Bank assistant and bankers ready to help.",'nav.main a[href="app-banking.html"]'],
 ["Perks","Member discounts on tools you already use, like payroll, bookkeeping and e-commerce.",'nav.main a[href="app-perks.html"]'],

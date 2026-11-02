@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=20"></head>
-<body class="app"><script src="data.js?v=20"></script><script src="portal.js?v=20"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=21"></head>
+<body class="app"><script src="data.js?v=21"></script><script src="portal.js?v=21"></script><main class="wrap">
 <div class="pagehead uni"><div><h1 id="wh"></h1><p id="wp"></p></div><a class="btn ghost" href="app-profile.html">Edit profile</a></div>
 <h3 style="margin:0 0 8px">Your profile</h3><div class="profile" id="pf"></div>
 <div class="two"><div>
@@ -20,8 +20,8 @@ ys.innerHTML=Y.length?Y.map(s=>`<div class="row"><span class="date">${fmtD(s.d)}
 ns.innerHTML=(L.length?"":`<p class="mut">You're registered for everything coming up.</p>`)+L.map(s=>`<div class="row"><span class="date">${fmtD(s.d)}</span><div style="flex:1"><b class="sname" onclick="sessionModal('${s.id}')" style="cursor:pointer">${s.n}</b><small>${s.f} · led by ${s.v}</small></div>${r.includes(s.id)?'<span class="tag">Registered</span>':`<button class="btn sm" onclick="sessionModal('${s.id}',true)">${s.f=="Workshop"?"Schedule":"Register"}</button>`}</div>`).join("")}
 function renG(){const RG=recommended(GRANTS,getProfile());rg.innerHTML=(RG.length?"":`<p class="mut">No funding matches your profile yet. <a href="app-grants.html">Browse all funding</a></p>`)+RG.slice(0,3).map(g=>`<div class="row"><div style="flex:1"><b>${g.n}</b><small>${g.who}</small><span class="rgact"><a class="btn sm ghost" href="${g.u||"app-grants.html"}"${g.u?' target="_blank" rel="noopener"':""}>Learn more</a><button class="btn sm" onclick="advisor('${g.n.replace(/'/g,"")}')">Schedule coaching</button></span></div><b>${g.a}</b></div>`).join("")}
 pk.innerHTML=PERKS.filter(p=>!p.bank).slice(0,4).map(p=>`<div class="row perk">${plogo(p)}<div><b>${p.n}</b><small>${p.sv?p.sv+" · ":""}${p.o}</small></div></div>`).join("");
-function pfRender(){const p=getProfile();pf.innerHTML=[["Business",p.biz],["Location",ME.city],["Industry",p.industry],["Volunteer hours received","14"]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}
+function pfRender(){const p=getProfile();pf.innerHTML=[["Business",p.biz],["Location",ME.city],["Industry",p.industry]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("")}
 pageInit();
 addEventListener("pageshow",e=>{if(e.persisted)pageInit()});addEventListener("storage",e=>{if(e.key=="ih_profile")pageInit()});addEventListener("focus",()=>pageInit());
 </script>
-</main><script src="chrome.js?v=20"></script></body></html>
+</main><script src="chrome.js?v=21"></script></body></html>
