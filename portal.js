@@ -191,8 +191,8 @@ const TOUR=[["Welcome to your Impact Hub","This is your member portal from 100th
 ["Home","Your dashboard: upcoming sessions, funding picked for you, and banking options in one place.",'nav.main a[href="app-home.html"]'],
 ["Workshops","Browse webinars and workshops led by bank volunteers. Book a session and tell the leader what you hope to get out of it.",'nav.main a[href="app-workshops.html"]'],
 ["Funding & Programs","Grants, loans, competitions and incubator/accelerator programs in one list. Filter by category; the best fits for you are at the top.",'nav.main a[href="app-grants.html"]'],
-["Banking","Accounts, cards and credit, with a 100th Street Bank assistant and bankers ready to help.",'nav.main a[href="app-banking.html"]'],
 ["Perks","Member discounts on tools you already use, like payroll, bookkeeping and e-commerce.",'nav.main a[href="app-perks.html"]'],
+["Banking","Accounts, cards and credit, with a 100th Street Bank assistant and bankers ready to help.",'nav.main a[href="app-banking.html"]'],
 ["Look for “Recommended”","Anything marked Recommended matches your industry, location or profile and is listed first. Update your profile any time to change your recommendations.",null]];
 function startTour(i=0){document.querySelectorAll(".tourhl").forEach(e=>e.classList.remove("tourhl"));let t=document.getElementById("tour");if(i>=TOUR.length){if(t)t.remove();LS.set("toured",1);return}
  if(!t){t=document.createElement("div");t.id="tour";document.body.append(t)}const [h,b,sel]=TOUR[i];const el=sel&&document.querySelector(sel);if(el&&el.offsetParent){el.classList.add("tourhl");el.scrollIntoView({block:"nearest",inline:"center"})}

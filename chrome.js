@@ -1,6 +1,6 @@
 (function(){const app=document.body.classList.contains("app");const here=location.pathname.split("/").pop()||"index.html";
 const pub=[["index.html","Home"],["index.html#partners","Partner with us"],["index.html#owners","For Business Owners"]];
-const int=[["app-home.html","Home"],["app-workshops.html","Workshops"],["app-grants.html","Funding & Programs"],["app-banking.html","Banking"],["app-perks.html","Perks"]];
+const int=[["app-home.html","Home"],["app-workshops.html","Workshops"],["app-grants.html","Funding & Programs"],["app-perks.html","Perks"],["app-banking.html","Banking"]];
 const L=app?int:pub;if(!app)try{sessionStorage.removeItem("ih_in")}catch(e){}
 const h=document.createElement("header");h.className="top";h.innerHTML=`<div class="wrap"><a class="brand" href="${app?"app-home.html":"index.html"}"><span class="btxt"><b>Small Business Impact Hub</b><small>by 100th Street Bank${app?" · Member portal":""}</small></span></a>
 <nav class="main">${L.map(([f,t])=>`<a href="${f}" class="${f==here||(f=="app-grants.html"&&here=="app-accelerators.html")?"on":""}">${t}</a>`).join("")}</nav>

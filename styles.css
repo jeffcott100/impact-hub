@@ -433,3 +433,5 @@ select option{padding-right:20px}
 
 .howstep{transition:transform .2s ease,box-shadow .2s ease}
 .howstep:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 14px 32px #0000001f}
+/* pin card actions to bottom, identical layout on every card */
+.ucard,.pcard{height:100%}.ucard .foot{margin-top:auto;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:8px}.ucard .foot>.btn{width:100%;text-align:center;justify-content:center}.pcard>div>.foot{margin-top:auto;padding-top:10px}

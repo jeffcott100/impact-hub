@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=21"></head>
-<body class="app"><script src="data.js?v=21"></script><script src="portal.js?v=21"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=22"></head>
+<body class="app"><script src="data.js?v=22"></script><script src="portal.js?v=22"></script><main class="wrap">
 <div class="pagehead uni"><div><h1>Workshops &amp; Sessions</h1><p>Webinars and hands-on workshops led by 100th Street Bank associate volunteers. Free for members.</p></div><button class="btn" onclick="book()">Book 1:1 office hours</button></div>
 <div class="fbar uni"><select id="ft"></select><select id="ff"></select></div>
 <div id="out"></div>
@@ -16,4 +16,4 @@ function book(){let pk=null;const m=modal(`<div style="border-top:5px solid var(
 slotCal(document.getElementById("ohcal"),OH,v=>{pk=v;bfb.disabled=!v;bfb.textContent=v?"Request "+new Date(v.slice(0,10)+"T12:00").toDateString().slice(0,10)+" · "+v.slice(11):"Pick a day and time"});wireNotes(m);
 bf.onsubmit=e=>{e.preventDefault();m.querySelector(".mgrid").querySelectorAll(".mcol")[1].querySelectorAll(":scope>*:not(#bok)").forEach(x=>x.style.display="none");bok.style.display="block"}}
 </script>
-</main><script src="chrome.js?v=21"></script></body></html>
+</main><script src="chrome.js?v=22"></script></body></html>
