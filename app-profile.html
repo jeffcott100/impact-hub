@@ -1,14 +1,14 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit profile · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=18"></head>
-<body class="app"><script src="data.js?v=18"></script><script src="portal.js?v=18"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit profile · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=19"></head>
+<body class="app"><script src="data.js?v=19"></script><script src="portal.js?v=19"></script><main class="wrap">
 <div class="pagehead uni"><div><h1>Edit business profile</h1><p>Used to recommend workshops, funding and accelerators for you across the portal.</p></div><a class="btn ghost" href="app-home.html">Back to dashboard</a></div>
-<div class="pfpage"><form class="f" id="pfm"></form><div class="card" id="plive" style="margin-top:16px"></div><div class="ok" id="pok"><b>Saved.</b> Recommendations across the portal are updated. <a href="app-grants.html">See recommended funding</a></div></div>
+<div class="pfpage"><form class="f" id="pfm"></form><div class="ok" id="pok" style="margin-top:14px"><b>Saved.</b> Your profile is updated and recommendations across the portal are updated. <a href="app-grants.html">See recommended funding</a></div></div>
 <script>
-function pageInit(){const p=getProfile();pfm.innerHTML=profileFields(p)+`<div class="full"><button class="btn">Save profile</button> <a href="app-home.html?tour" class="lnk">Replay the portal tour</a></div>`;wireZip(pfm)}
-pageInit();pfm.classList.add("pform");
-function liveRen(){const p=getProfile(),R=sortRecommended([...GRANTS,...ACCS],p).filter(x=>recScore(p,x)>=2).slice(0,4);plive.innerHTML=`<h3 style="margin-top:0">Your recommendations</h3><p class="mut">${ME.city}${ME.market?" · "+ME.market:""} · ${p.industry}</p>`+(R.length?R.map(x=>`<div class="row"><div style="flex:1"><b>${x.n}</b><small>${x.who||x.org||""}</small></div><span class="rectag">Recommended</span></div>`).join(""):`<p class="mut">No location or industry matches yet.</p>`)}
-function liveSave(){const f=readProfile(pfm);saveProfile({zip:f.zip,city:f.city,state:f.state,industry:f.industry});liveRen()}
-pfm.addEventListener("change",e=>{if(["industry","city","state"].includes(e.target.name)||(e.target.name=="zip"&&e.target.value.length==5))liveSave()});pfm.addEventListener("zipfilled",liveSave);liveRen();
-pfm.onsubmit=e=>{e.preventDefault();saveProfile(readProfile(pfm));pok.style.display="block";pok.scrollIntoView({block:"nearest"})};
+function pageInit(){const p=getProfile();pfm.innerHTML=profileFields(p)+`<div class="full"><button class="btn">Save profile</button></div>`;wireZip(pfm)}
+pageInit();pfm.classList.add("pform");pfm.style.alignItems="start";
+function liveSave(){const f=readProfile(pfm);saveProfile({zip:f.zip,city:f.city,state:f.state,industry:f.industry})}
+pfm.addEventListener("change",e=>{if(["industry","city","state"].includes(e.target.name)||(e.target.name=="zip"&&e.target.value.length==5))liveSave()});pfm.addEventListener("zipfilled",liveSave);
+function onSave(e){e.preventDefault();saveProfile(readProfile(pfm));pfm.style.display="";pok.style.display="block";pok.scrollIntoView({block:"nearest"})}
+document.addEventListener("DOMContentLoaded",()=>{pfm.onsubmit=onSave});
 </script>
-</main><script src="chrome.js?v=18"></script></body></html>
+</main><script src="chrome.js?v=19"></script></body></html>
