@@ -90,6 +90,8 @@ const ACCS=[
 {n:"gener8tor",w:"g8",org:"gBETA Milwaukee, Milwaukee, WI",m:"East North Central",st:"Idea / early stage",len:"Free pre-accelerator",u:"https://www.gener8tor.com/gbeta/milwaukee"},
 {n:"LearnLaunch",l:"img/logos/learnlaunch.svg",org:"LearnLaunch Accelerator, Boston, MA",m:"New England",st:"Pre-seed",len:"Accelerator + pre-seed fund",u:"https://learnlaunch.com/"},
 {n:"La Cocina",w:"LC",org:"Food business incubator, San Francisco, CA",m:"Pacific",st:"Idea / early stage",len:"Kitchen incubator",u:"https://www.lacocinasf.org/"},
+{n:"mHUB",l:"img/logos/mhub.png",org:"mHUB Accelerator, Chicago, IL",m:"East North Central",st:"Early stage",len:"Hardtech accelerator",u:"https://mhub.org/accelerator"},
+{n:"Social Enterprise Greenhouse",l:"img/logos/segreenhouse.png",org:"SEG Accelerator, Providence, RI",m:"New England",st:"Early stage",len:"Social enterprise accelerator",u:"https://segri.org/accelerator/"},
 {n:"Boomtown",l:"img/logos/boomtown.png",org:"Boomtown Accelerator, Boulder, CO",m:"Mountain",st:"Early stage",len:"Startup accelerator",u:"https://boomtownaccelerators.com/"}];
 const PERKS=[
 {n:"Claude or Gemini AI",l:"img/logos/claude.svg",o:"Member discount on AI assistant access for your team",sv:"20% off team plans for 12 months",c:"AI"},

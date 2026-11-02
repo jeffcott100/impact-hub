@@ -431,3 +431,4 @@ header.top:has(.tourhl){z-index:22}
 footer .flogo{display:inline-flex;vertical-align:middle;margin-right:10px}footer .flogo svg{width:28px;height:28px}
 select{padding-right:32px!important;text-overflow:ellipsis}
 select option{padding-right:20px}
+@media(min-width:641px){.profile{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}}
