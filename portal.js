@@ -77,7 +77,7 @@ function modal(html){let m=document.getElementById("mdl");if(!m){m=document.crea
 
 function plogo(p){return p.l?`<img src="${p.l}" alt="">`:`<span class="lm">100</span>`}
 // Session details popup: description, goals, leader, format. Workshops let you pick your own time; webinars register at the fixed time.
-const ACCENTS={AI:"#0276B1",Finance:"#1b7a3d",Legal:"#CC2427",Marketing:"#8a3ea3",Operations:"#b4620a",Technology:"#013D5B"};
+const ACCENTS={AI:"#0276B1",Finance:"var(--rec)",Legal:"#CC2427",Marketing:"#8a3ea3",Operations:"#b4620a",Technology:"#013D5B"};
 // Banking product recommendations, driven by the company profile (years in business / revenue / employees).
 function bankRecs(){const p=getProfile(),r=new Set();
  if(p.years<=2)r.add("chk"),r.add("sav");
@@ -85,7 +85,7 @@ function bankRecs(){const p=getProfile(),r=new Set();
  if(p.employees>=5)r.add("dc"),r.add("mer");
  if(!r.size)r.add("chk");
  return r}
-function applyBankRecs(){const r=bankRecs();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("recbox",on);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="tag rectag";t.style.background="#1b7a3d";t.style.color="#fff";t.style.borderColor="#1b7a3d";t.textContent="Recommended for you";t.style.alignSelf="flex-start";t.style.marginBottom="8px";el.prepend(t)}else if(!on&&t)t.remove()})}
+function applyBankRecs(){const r=bankRecs();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("recbox",on);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="tag rectag";t.style.background="var(--rec)";t.style.color="#fff";t.style.borderColor="var(--rec)";t.textContent="Recommended for you";t.style.alignSelf="flex-start";t.style.marginBottom="8px";el.prepend(t)}else if(!on&&t)t.remove()})}
 function sessionModal(id,register){const s=SESSIONS.find(x=>x.id==id);if(!s)return;const acc=ACCENTS[s.t]||"#0276B1";const r=regd().includes(s.id);
  const showSlots=s.f=="Workshop"&&register&&!r;
  const slotPicker=showSlots?`<label>Choose a time<select id="slotSel">${(SLOTS[s.id]||[s.d+" "+s.tm+" ET"]).map(t=>`<option>${t}</option>`).join("")}</select></label>`:"";
