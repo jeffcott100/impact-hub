@@ -1,16 +1,36 @@
 // Member portal data. All fictional.
 const ME={biz:"Harbor & Vine Catering",owner:"Danielle",city:"Richmond, VA",via:"Union Kitchen Accelerator",viaSrc:"RVA",stage:"Growth (3 yrs, 6 employees)",market:"South Atlantic"};
+// Company profile used to drive "Recommended" ranking across the portal. Editable via Edit profile.
+function defaultProfile(){return{biz:ME.biz,industry:"Food & beverage",zip:"23220",employees:6,revenue:"$500K\u2013$2M",years:3}}
+function getProfile(){return LS.get("profile",defaultProfile())}
+function saveProfile(p){LS.set("profile",p)}
+const INDUSTRIES=["Community & main street","Education","Food & beverage","Social impact","Tech & startups"];
+function industryMatch(profIndustry,itemIndustry){if(!itemIndustry)return false;return itemIndustry===profIndustry}
+function recScore(prof,item){let sc=0;if(item.k&&industryMatch(prof.industry,item.k))sc+=2;else if(item.who&&prof.industry&&item.who.toLowerCase().includes(prof.industry.split(" ")[0].toLowerCase()))sc+=1;if(item.m&&item.m==ME.market)sc+=1;if(item.who&&/revenue|\$/.test(item.who)){/* light revenue hint, best-effort */}return sc}
+function sortRecommended(list,prof){return [...list].sort((a,b)=>recScore(prof,b)-recScore(prof,a))}
+function profileModal(){const p=getProfile();const m=modal(`<h3>Edit business profile</h3><p class="mut">Used to recommend workshops, funding and accelerators for you.</p><form class="f" id="pfm">
+<label>Business name<input name="biz" value="${p.biz}" required></label>
+<label>Industry<select name="industry">${INDUSTRIES.map(i=>`<option ${i==p.industry?"selected":""}>${i}</option>`).join("")}</select></label>
+<label>ZIP code<input name="zip" value="${p.zip}" pattern="[0-9]{5}" required></label>
+<label>Employee count<input name="employees" type="number" min="0" value="${p.employees}" required></label>
+<label>Annual revenue<select name="revenue">${["Under $100K","$100K\u2013$500K","$500K\u2013$2M","Over $2M"].map(r=>`<option ${r==p.revenue?"selected":""}>${r}</option>`).join("")}</select></label>
+<label>Years in business<input name="years" type="number" min="0" value="${p.years}" required></label>
+<button class="btn">Save profile</button></form><div class="ok"><b>Saved.</b> Recommendations across the portal are updated.</div>`);
+pfm.onsubmit=e=>{e.preventDefault();const fd=new FormData(pfm);const np={biz:fd.get("biz"),industry:fd.get("industry"),zip:fd.get("zip"),employees:+fd.get("employees"),revenue:fd.get("revenue"),years:+fd.get("years")};saveProfile(np);pfm.style.display="none";pfm.nextElementSibling.style.display="block";setTimeout(()=>{if(typeof pfRender=="function")pfRender();if(typeof ren=="function")ren()},50)}}
 const TOPICS=["AI","Finance","Legal","Marketing","Operations","Technology"];
 const SMARKETS=["Greater Washington","Texas","Virginia"];
 const SESSIONS=[
-["s1","AI","AI for small business","2026-10-28","12:00","","Workshop","Priya N., Data Science",1,1],
-["s3","Finance","Financial statements 101","2026-11-04","13:00","","Workshop","Elena R., Finance",0,1],
-["s13","Finance","Managing business credit","2026-11-05","12:00","","Workshop","Devon L., Small Business Bank",0,1],
-["s14","Finance","Business loan basics","2026-11-09","12:00","Greater Washington","Workshop","Marcus T., Commercial Banking",0,1],
-["s15","Operations","Strategy coaching program","2026-11-16","10:00","","Program","Matched 100th Street Bank volunteer",0,1,1],
-["s4","Finance","Cash flow planning","2026-11-06","09:30","Virginia","Workshop","Jordan K., Treasury"],
-["s5","Legal","Legal clinic","2026-11-10","14:00","Virginia","Clinic","100th Street Bank Legal associates",1],
-].map(([id,t,n,d,tm,m,f,v,real,jeff,apply])=>({id,t,n,d,tm,m,f,v,real,jeff,apply})).sort((a,b)=>(b.jeff||0)-(a.jeff||0));
+["s1","AI","AI for small business","2026-10-28","12:00","","Workshop","Priya Natarajan, Data Science","Hands-on session on where AI tools genuinely save owner-operators time, from scheduling to customer replies.","Leave with 3 AI tools set up for your business and a short list of what to avoid.",1,1],
+["s3","Finance","Financial statements 101","2026-11-04","13:00","","Workshop","Elena Reyes, Finance","Read your P&L and balance sheet like a banker does, and know which numbers to watch monthly.","Understand your statements well enough to spot a problem before it becomes one.",0,1],
+["s13","Finance","Managing business credit","2026-11-05","12:00","","Workshop","Devon Larkin, Small Business Bank","How business credit is built and used, and the habits that keep your score moving the right direction.","Walk away with a personal plan to raise or protect your business credit score.",0,1],
+["s14","Finance","Business loan basics","2026-11-09","12:00","Greater Washington","Workshop","Marcus Thibodeaux, Commercial Banking","What lenders look for, loan types available to small businesses, and how to prepare an application.","Know which loan product fits your stage and what documents to gather first.",0,1],
+["s15","Operations","Strategy coaching program","2026-11-16","10:00","","Workshop","Taylor Simmons, Business Coaching","A matched 1:1 coaching track with a 100th Street Bank volunteer, built around your growth goals.","Finish with a written 90-day growth plan reviewed by your coach.",0,1,1],
+["s4","Finance","Cash flow planning","2026-11-06","09:30","Virginia","Workshop","Jordan Kwan, Treasury","Build a simple cash flow forecast and plan for seasonal dips before they hit.","Leave with a 13-week cash flow template filled in for your business.",0,0],
+["s5","Legal","Legal clinic","2026-11-10","14:00","Virginia","Webinar","Morgan Bell, Legal","Live Q&A on contracts, entity structure and compliance basics for small business owners.","Get plain-language answers to your top legal questions before they become expensive.",1,0],
+].map(([id,t,n,d,tm,m,f,v,ds,gl,real,jeff,apply])=>({id,t,n,d,tm,m,f,v,ds,gl,real,jeff,apply})).sort((a,b)=>(b.jeff||0)-(a.jeff||0));
+// Extra selectable time slots for individually-scheduled Workshops (members pick their own time).
+const SLOTS={s1:["2026-10-28 12:00 ET","2026-11-02 15:00 ET","2026-11-06 10:00 ET"],s3:["2026-11-04 13:00 ET","2026-11-07 09:00 ET"],s13:["2026-11-05 12:00 ET","2026-11-10 14:00 ET"],s14:["2026-11-09 12:00 ET","2026-11-13 11:00 ET"],s15:["2026-11-16 10:00 ET","2026-11-18 13:00 ET","2026-11-20 09:30 ET"],s4:["2026-11-06 09:30 ET","2026-11-11 10:30 ET"]};
+
 const VOLS=[["Elena R.","Finance · statements & cash flow"],["Priya N.","Data Science · AI tools"],["Devon L.","Small Business Bank · credit"],["Alexis M.","Marketing · digital presence"],["Chris W.","Cyber · fraud prevention"]];
 const GRANTS=[
 {u:"https://aeoworks.org/",st:"ALL",l:"img/logos/aeo.png",n:"Business Grant Program for Black-Owned Businesses (with AEO)",a:"$10,000",m:"National",who:"Black-owned, 2+ yrs operating, revenue up to $1M",type:"Grant",src:"SMB",note:"2025 round: 120 grants"},
@@ -56,6 +76,27 @@ function modal(html){let m=document.getElementById("mdl");if(!m){m=document.crea
  m.innerHTML=`<div>${html}</div>`;m.style.display="grid";return m}
 
 function plogo(p){return p.l?`<img src="${p.l}" alt="">`:`<span class="lm">100</span>`}
+// Session details popup: description, goals, leader, format. Workshops let you pick your own time; webinars register at the fixed time.
+const ACCENTS={AI:"#0276B1",Finance:"#1b7a3d",Legal:"#CC2427",Marketing:"#8a3ea3",Operations:"#b4620a",Technology:"#013D5B"};
+// Banking product recommendations, driven by the company profile (years in business / revenue / employees).
+function bankRecs(){const p=getProfile(),r=new Set();
+ if(p.years<=2)r.add("chk"),r.add("sav");
+ if(p.revenue=="Over $2M"||p.revenue=="$500K\u2013$2M")r.add("loc"),r.add("mer");
+ if(p.employees>=5)r.add("dc"),r.add("mer");
+ if(!r.size)r.add("chk");
+ return r}
+function applyBankRecs(){const r=bankRecs();document.querySelectorAll("[data-bk]").forEach(el=>{const on=r.has(el.dataset.bk);el.classList.toggle("recbox",on);let t=el.querySelector(".rectag");if(on&&!t){t=document.createElement("span");t.className="tag rectag";t.style.background="#1b7a3d";t.style.color="#fff";t.style.borderColor="#1b7a3d";t.textContent="Recommended for you";(el.querySelector("small")||el).after(t)}else if(!on&&t)t.remove()})}
+function sessionModal(id,register){const s=SESSIONS.find(x=>x.id==id);if(!s)return;const acc=ACCENTS[s.t]||"#0276B1";const r=regd().includes(s.id);
+ const showSlots=s.f=="Workshop"&&register&&!r;
+ const slotPicker=showSlots?`<label>Choose a time<select id="slotSel">${(SLOTS[s.id]||[s.d+" "+s.tm+" ET"]).map(t=>`<option>${t}</option>`).join("")}</select></label>`:"";
+ const action=r?`<button class="btn sm ghost" type="button" id="cancelBtn">Cancel registration</button>`:register?(s.f=="Workshop"?`<button class="btn" id="goBtn">Confirm registration</button>`:`<button class="btn" id="goBtn">Register for ${fmtD(s.d).replace("<br>"," ")} · ${s.tm} ET</button>`):`<button class="btn" id="goBtn" data-open="1">${s.f=="Workshop"?"Schedule a time":"Register"}</button>`;
+ const m=modal(`<div style="border-top:5px solid ${acc};margin:-22px -22px 16px;border-radius:${10}px ${10}px 0 0;height:5px"></div><span class="tag">${s.t}</span><span class="tag">${s.f}</span><h3 style="margin-top:8px">${s.n}</h3>
+ <p class="mut"><b>Led by</b> ${s.v}</p><p>${s.ds||""}</p><p><b>What you'll get:</b> ${s.gl||""}</p><p class="mut">${s.f=="Webinar"?`${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""} · fixed time, click to register`:"Workshop · pick a time that works for you"}</p>
+ ${slotPicker}<div style="margin-top:14px">${action}</div><div class="ok"></div>`);
+ const close=()=>{m.style.display="none"};
+ const gb=m.querySelector("#goBtn");if(gb)gb.onclick=()=>{if(gb.dataset.open){close();sessionModal(s.id,true);return}toggleReg(s.id);m.querySelector(".ok").innerHTML=`<b>${s.f=="Workshop"?"Registered for "+(m.querySelector("#slotSel")?m.querySelector("#slotSel").value:s.d):"Registered"}.</b> We'll send a confirmation email. (Prototype: nothing was sent.)`;m.querySelector(".ok").style.display="block";gb.style.display="none";if(typeof ren=="function")ren()};
+ const cb=m.querySelector("#cancelBtn");if(cb)cb.onclick=()=>{toggleReg(s.id);close();if(typeof ren=="function")ren()}}
+
 function advisor(n){const m=modal(`<h3>Schedule time with an advisor</h3><p class="mut">${n?"A 30-minute call on how to position your business for <b>"+n+"</b>.":"A 30-minute call on positioning your business for funding."}</p><form class="f" id="avf"><label>Preferred date<input type="date" required value="2026-11-03"></label><label>Time<select><option>Morning</option><option>Midday</option><option>Afternoon</option></select></label><label>Anything we should know?<textarea rows="3"></textarea></label><button class="btn">Request time</button></form><div class="ok"><b>Requested.</b> An advisor will confirm by email. (Prototype: nothing was sent.)</div>`);avf.onsubmit=e=>{e.preventDefault();avf.style.display="none";avf.nextElementSibling.style.display="block"}}
 function searchBox(el,ph){el.insertAdjacentHTML("afterbegin",`<input class="kw" id="kw" placeholder="${ph}" style="flex:2;min-width:240px;padding:10px 12px;border:1px solid var(--g2);border-radius:8px;font:inherit">`);return document.getElementById("kw")}
 const hit=(q,...f)=>!q||f.join(" ").toLowerCase().includes(q.toLowerCase());
