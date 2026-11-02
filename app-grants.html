@@ -1,8 +1,8 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Funding · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=6"></head>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Funding · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=7"></head>
 <body class="app"><script src="data.js?v=6"></script><script src="portal.js?v=6"></script><main class="wrap">
-<div class="pagehead"><div><h1>Funding</h1><p>Grants and competitions open to Hub members.</p></div></div>
-<div class="fbar"><select id="fy"></select></div><div class="grid" id="out"></div>
+<div class="pagehead uni"><div><h1>Funding</h1><p>Grants, competitions and loans open to Hub members, ranked for your business profile.</p></div></div>
+<div class="fbar uni"><select id="fy"></select></div><div class="grid" id="out"></div>
 <script>const kw=searchBox(document.querySelector(".fbar"),"Search funding programs: keyword, eligibility, amount");kw.oninput=ren;const SELS=statePicker(document.querySelector(".fbar"),ren);opts(fy,"Type",["Competition","Grant","Loan"]);fy.onchange=ren;
 function ren(){const prof=getProfile();const L=sortRecommended(GRANTS.filter(g=>hit(kw.value,g.n,g.who,g.a,g.type,g.m,g.note||"")&&(!SELS.length||g.st=="ALL"||SELS.some(x=>g.st.includes(x)))&&(!fy.value||g.type==fy.value)),prof);
 out.innerHTML=L.map(g=>`<div class="card">${recScore(prof,g)>0?'<span class="tag" style="background:#1b7a3d;color:#fff;border-color:#1b7a3d">Recommended</span>':""}<div class="alogo">${g.l?`<img src="${g.l}" alt="">`:`<span class="wm">${g.w}</span>`}</div><span class="tag">${g.type}</span><span class="tag">${g.st=="ALL"?"National":g.st.length>3?g.st.length+" states":g.st.join(", ")}</span><h3 style="margin-top:6px">${g.n}${g.S?S():""}</h3><p><b style="color:var(--navy)">${g.a}</b></p><p>${g.who}${g.note?". "+g.note:""}</p><div class="foot"><a class="btn sm" href="${g.u||"#"}" target="_blank" rel="noopener">Learn more</a><button class="btn sm ghost" onclick="advisor('${g.n.replace(/'/g,"")}')">Talk to an advisor</button></div></div>`).join("")||"<p>No funding matches. Try another state or fewer filters.</p>"}

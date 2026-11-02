@@ -1,11 +1,10 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=6"></head>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workshops · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=7"></head>
 <body class="app"><script src="data.js?v=6"></script><script src="portal.js?v=6"></script><main class="wrap">
-<div class="pagehead"><div><h1>Workshops &amp; sessions</h1><p>Led by 100th Street Bank associate volunteers. Free for members.</p></div><button class="btn" onclick="book()">Book 1:1 office hours</button></div>
-<div class="fbar"><select id="ft"></select><select id="ff"></select><div class="tabs" style="margin:0"><button class="on" id="vl">List</button><button id="vc">Calendar</button></div></div>
+<div class="pagehead uni"><div><h1>Workshops &amp; sessions</h1><p>Webinars and hands-on workshops led by 100th Street Bank associate volunteers. Free for members.</p></div><button class="btn" onclick="book()">Book 1:1 office hours</button></div>
+<div class="fbar uni"><select id="ft"></select><select id="ff"></select><div class="tabs" style="margin:0"><button class="on" id="vl">List</button><button id="vc">Calendar</button></div></div>
 <div id="out"></div>
 <script>
-document.querySelector(".pagehead p").innerHTML=`Led by 100th Street Bank associate volunteers. Free for members.`;
 const kw=searchBox(document.querySelector(".fbar"),"Search sessions and programs");kw.oninput=ren;opts(ft,"Topic",TOPICS);opts(ff,"Format",["Webinar","Workshop"]);let view="list";
 vl.onclick=()=>{view="list";vl.classList.add("on");vc.classList.remove("on");ren()};vc.onclick=()=>{view="cal";vc.classList.add("on");vl.classList.remove("on");ren()};
 [ft,ff].forEach(s=>s.onchange=ren);

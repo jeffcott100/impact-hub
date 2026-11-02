@@ -298,3 +298,9 @@ nav.spy a{white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.88
 #netlogos.marq .mtrack img{height:34px}
 @keyframes marq{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 @media(prefers-reduced-motion:reduce){.marq .mtrack{animation-duration:120s}}
+/* wave9: uniform portal list pages */
+.pagehead.uni{background:#fff;border:1px solid #e6e9ec;border-left:4px solid var(--blue);border-radius:var(--r);padding:22px 26px;margin:0 0 18px;align-items:center;box-shadow:0 2px 10px #0000000a}
+.pagehead.uni h1{font-size:2rem;line-height:1.15;margin:0 0 6px}.pagehead.uni p{max-width:640px;font-size:1rem}
+.fbar.uni{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;margin:0 0 20px}.fbar.uni>*{min-height:44px}.fbar.uni select{flex:1;min-width:160px;max-width:240px;padding:10px 12px;border:1px solid var(--g2);border-radius:8px;font:inherit}.fbar.uni .kw{flex:2 1 280px!important}.fbar.uni .stpick{flex:1 1 200px}
+@media(max-width:600px){.pagehead.uni{padding:18px}.pagehead.uni h1{font-size:1.6rem}.fbar.uni>*{flex:1 1 100%!important;max-width:none!important;min-width:0!important}}
+.pfpage{background:#fff;border:1px solid #e6e9ec;border-radius:var(--r);padding:26px;max-width:720px}.pfpage form.f{max-width:none;grid-template-columns:1fr 1fr}.pfpage form.f .full{grid-column:1/-1}@media(max-width:600px){.pfpage{padding:18px}.pfpage form.f{grid-template-columns:1fr}}
