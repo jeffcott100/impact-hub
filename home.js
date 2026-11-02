@@ -169,7 +169,7 @@ function drawMap(){
   if(intro){const paths=[...svg.querySelectorAll(".st path")],byName={};US_STATES.forEach((s2,i)=>byName[s2.n]=paths[i]);
    paths.forEach(p=>{if(p.classList.contains("fp")){p.classList.remove("fp");p.classList.add("fpw")}});
    const cs=[...g.querySelectorAll("circle.pend")].sort((p,q)=>(+p.getAttribute("cx"))-(+q.getAttribute("cx")));
-   const play=()=>{introDone=true;const step=Math.max(25,Math.min(70,3200/cs.length));cs.forEach((c,i)=>setTimeout(()=>{c.classList.remove("pend");c.classList.add("drop");const p=byName[DOTS[c.dataset.i].s];if(p&&!p.classList.contains("fp")){p.classList.remove("fpw");p.classList.add("fp","dropHl")}},i*step));
+   const play=()=>{introDone=true;const step=2600/Math.max(1,cs.length);cs.forEach((c,i)=>setTimeout(()=>{c.classList.remove("pend");c.classList.add("drop");const p=byName[DOTS[c.dataset.i].s];if(p&&!p.classList.contains("fp")){p.classList.remove("fpw");p.classList.add("fp","dropHl")}},i*step));
     setTimeout(()=>paths.forEach(p=>{if(p.classList.contains("fpw")){p.classList.remove("fpw");p.classList.add("fp")}}),cs.length*step+600)};
    if(window.__mo)window.__mo.disconnect();const mo=window.__mo=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){mo.disconnect();play()}},{threshold:.35});mo.observe(svg)}
   g.querySelectorAll("circle").forEach(c=>{const show=()=>{const d=DOTS[c.dataset.i];tipAt(c,`<b>${d.o}</b><div>${d.c} · ${d.m}</div><div><span class="tag">${d.k}</span></div><div>${d.p}</div><div class="amt">${fmt(d.a)}</div>`);g.querySelectorAll(".on").forEach(z=>z.classList.remove("on"));c.classList.add("on")};

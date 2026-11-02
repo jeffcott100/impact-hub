@@ -305,3 +305,23 @@ nav.spy a{white-space:nowrap;text-decoration:none;color:var(--ink);font-size:.88
 @media(max-width:600px){.pagehead.uni{padding:18px}.pagehead.uni h1{font-size:1.6rem}.fbar.uni>*{flex:1 1 100%!important;max-width:none!important;min-width:0!important}}
 .pfpage{background:#fff;border:1px solid #e6e9ec;border-radius:var(--r);padding:26px;max-width:720px}.pfpage form.f{max-width:none;grid-template-columns:1fr 1fr}.pfpage form.f .full{grid-column:1/-1}@media(max-width:600px){.pfpage{padding:18px}.pfpage form.f{grid-template-columns:1fr}}
 .fbar.uni .stpick{padding:3px 8px;min-height:46px;max-height:none}
+/* wave10 */
+#usmap circle.drop{animation:dotdrop 1s cubic-bezier(.22,.61,.36,1) both}
+@keyframes dotdrop{0%{transform:scale(0);opacity:0}70%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.collage{grid-template-columns:1fr 1fr}
+.collage img{object-position:50% 20%}
+@media(min-width:801px){.collage{grid-template-rows:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){.collage{grid-template-columns:repeat(3,1fr)}.collage img{aspect-ratio:3/4}}
+.interest{display:block;padding:28px 36px}
+.interest .ihead{max-width:none;margin:0 0 18px;display:flex;align-items:baseline;gap:8px 28px;flex-wrap:wrap}
+.interest .ihead h2{margin:0;white-space:nowrap}.interest .ihead p{flex:1 1 360px}
+.interest form.iform{grid-template-columns:repeat(4,1fr);gap:14px 20px}
+.interest form.iform .btn{grid-column:1/-1;justify-self:start;margin-top:4px}
+.interest .ok{grid-column:auto}
+@media(max-width:900px){.interest form.iform{grid-template-columns:1fr 1fr}.interest{padding:22px 18px}}
+@media(max-width:520px){.interest form.iform{grid-template-columns:1fr}}
+.grid.bens{grid-template-columns:repeat(2,1fr)!important;gap:20px}
+.grid.bens .pc{display:grid;grid-template-columns:minmax(160px,40%) 1fr}.grid.bens .pc img{height:100%;aspect-ratio:auto}
+@media(max-width:600px){.grid.bens{grid-template-columns:1fr!important}.grid.bens .pc{grid-template-columns:1fr}.grid.bens .pc img{aspect-ratio:3/2}}
+.fbar.uni .stpick{min-height:46px;padding:2px 8px}.fbar.uni .stpick input{min-height:0;height:40px;padding-top:0;padding-bottom:0;margin:0}
