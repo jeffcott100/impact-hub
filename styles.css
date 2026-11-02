@@ -432,3 +432,6 @@ footer .flogo{display:inline-flex;vertical-align:middle;margin-right:10px}footer
 select{padding-right:32px!important;text-overflow:ellipsis}
 select option{padding-right:20px}
 @media(min-width:641px){.profile{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}}
+
+.howstep{transition:transform .2s ease,box-shadow .2s ease}
+.howstep:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 14px 32px #0000001f}

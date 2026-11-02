@@ -19,7 +19,23 @@ function recScore(prof,item){let sc=0;const txt=((item.who||"")+" "+(item.n||"")
  if(prof.gender=="Woman"&&/women/.test(txt))sc+=2;if(prof.race=="Black or African American"&&/black/.test(txt))sc+=2;if(prof.race=="Hispanic or Latino"&&/latin/.test(txt))sc+=2;if(prof.military&&prof.military!="No military affiliation"&&/veteran|military/.test(txt))sc+=2;
  if(prof.city&&((item.who||"")+" "+(item.n||"")+" "+(item.org||"")+" "+(item.c||"")).includes(prof.city))sc+=1;
  return sc}
-function sortRecommended(list,prof){return [...list].sort((a,b)=>recScore(prof,b)-recScore(prof,a))}
+// Recommendation eligibility: must match geography AND industry; software & nonprofit programs are geography-agnostic; items with u0:1 are open to everyone.
+const GEO_FREE=["Technology & software","Nonprofit & social enterprise"];
+const IDS=[["black",/black/,p=>p.race=="Black or African American"],["latino",/latin|hispanic/,p=>p.race=="Hispanic or Latino"],["asian",/\basian/,p=>p.race=="Asian"],["native",/native|indigenous|tribal/,p=>/Native|Indian/.test(p.race||"")],["women",/women|woman/,p=>p.gender=="Woman"],["veteran",/veteran|military/,p=>p.military&&!/No military|Prefer not/.test(p.military)]];
+function idTags(item){const t=((item.who||"")+" "+(item.n||"")+" "+(item.org||"")).toLowerCase();return IDS.filter(([,re])=>re.test(t))}
+function isEligible(prof,item){if(item.u0)return true;
+ const ids=idTags(item);if(ids.length){const none=!prof.race&&!prof.gender&&!prof.military;if(!none&&!ids.some(([,,ok])=>ok(prof)))return false}
+ const ks=[].concat(item.k||[]);if(ks.length&&!ks.includes(prof.industry))return false;
+ if(ks.some(k=>GEO_FREE.includes(k)))return true;
+ if(item.st=="ALL")return true;const sts=itemStates(item);return !!prof.state&&sts.includes(prof.state)}
+function sortRecommended(list,prof){return [...list].sort((a,b)=>(isEligible(prof,b)-isEligible(prof,a))||(recScore(prof,b)-recScore(prof,a)))}
+function recommended(list,prof){return sortRecommended(list.filter(x=>isEligible(prof,x)),prof)}
+// Times: source times are Eastern; shown in the member's local zone (from profile ZIP/state), 12-hour am/pm.
+const TZ_OFF={ET:0,CT:-1,MT:-2,PT:-3,AKT:-4,HT:-5};
+const TZ_ST={CT:["Alabama","Arkansas","Illinois","Iowa","Kansas","Louisiana","Minnesota","Mississippi","Missouri","Nebraska","North Dakota","Oklahoma","South Dakota","Texas","Wisconsin","Tennessee"],MT:["Arizona","Colorado","Idaho","Montana","New Mexico","Utah","Wyoming"],PT:["California","Nevada","Oregon","Washington"],AKT:["Alaska"],HT:["Hawaii"]};
+function tzAbbr(){const st=getProfile().state;for(const z in TZ_ST)if(TZ_ST[z].includes(st))return z;return "ET"}
+function fmtT(hm){const z=tzAbbr();let [h,m]=String(hm).split(":").map(Number);h=((h+TZ_OFF[z])%24+24)%24;const ap=h<12?"am":"pm";const h12=h%12||12;return `${h12}:${String(m).padStart(2,"0")} ${ap} ${z}`}
+function fmtSlot(v){const m=String(v).match(/^(\S+) (\d{1,2}:\d{2})/);return m?m[1]+" "+fmtT(m[2]):v}
 const REVS=["Under $100K","$100K–$500K","$500K–$2M","Over $2M"];
 const GENDERS=["Woman","Man","Non-binary","Prefer to self-describe","Prefer not to say"];
 const RACES=["American Indian or Alaska Native","Asian","Black or African American","Hispanic or Latino","Middle Eastern or North African","Native Hawaiian or Pacific Islander","White","Multiracial","Prefer not to say"];
@@ -81,7 +97,7 @@ const ACCS=[
 {n:"The DEC Network",l:"img/logos/dec.png",org:"Dallas Small Business Accelerator, with UT Dallas",m:"West South Central",st:"Early stage",len:"12 weeks",src:"ACC",u:"https://thedec.co/"},
 {n:"UT Dallas Innovation & Entrepreneurship",l:"img/logos/utd.svg",org:"CometX Accelerator, Richardson, TX",m:"West South Central",st:"Idea / early stage",len:"University accelerator",u:"https://innovation.utdallas.edu/cometx-accelerator/"},
 {n:"Union Kitchen Accelerator",w:"Union Kitchen",org:"Union Kitchen, Washington, DC",m:"South Atlantic",st:"Early",len:"180 days, in person, rolling admission",src:"RVA",u:"https://www.unionkitchen.com/"},
-{n:"Latino Business Action Network (LBAN)",w:"LBAN",org:"LBAN Scaling Program with Stanford GSB faculty, Stanford, CA",m:"Pacific",st:"Growth",len:"Nine weeks, two tracks",u:"https://www.lban.us/programs/business-scaling-program/"},
+{n:"Latino Business Action Network (LBAN)",u0:1,w:"LBAN",org:"LBAN Scaling Program with Stanford GSB faculty, Stanford, CA",m:"Pacific",st:"Growth",len:"Nine weeks, two tracks",u:"https://www.lban.us/programs/business-scaling-program/"},
 {n:"Halcyon",l:"img/logos/halcyon.png",org:"Impact-driven startup accelerator, Washington, DC",m:"South Atlantic",st:"Early stage",len:"Programs since 2014",u:"https://halcyonaccelerator.org/programs/"},
 {n:"Propeller",w:"PROP",org:"Impact Accelerator, New Orleans, LA",m:"West South Central",st:"Early stage",len:"Cohort accelerator",u:"https://gopropeller.org/impact-accelerator/"},
 {n:"Rising Tide Capital",w:"RTC",org:"Community Business Academy, Jersey City, NJ",m:"Middle Atlantic",st:"Idea / early stage",len:"Business training + coaching",u:"https://programs.risingtidecapital.org/community-business-academy/"},
@@ -130,19 +146,19 @@ function applyBankRecs(){const r=bankRecs();const parents=new Set();document.que
 function slotCal(el,slots,onPick){const by={};slots.forEach(t=>{const [d,tm]=t.split(" ");(by[d]=by[d]||[]).push(tm)});const days=Object.keys(by).sort();let cur=new Date(days[0]+"T12:00");cur.setDate(1);let pickD=null,pickT=null;
  const draw=()=>{const y=cur.getFullYear(),mo=cur.getMonth(),first=new Date(y,mo,1).getDay(),n=new Date(y,mo+1,0).getDate();let g="";
   for(let i=0;i<first;i++)g+="<span></span>";for(let d=1;d<=n;d++){const key=`${y}-${String(mo+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;g+=by[key]?`<button type="button" class="av${key==pickD?" on":""}" data-d="${key}">${d}</button>`:`<span class="na">${d}</span>`}
-  el.innerHTML=`<div class="scal"><div class="schd"><button type="button" class="pv" aria-label="Previous month">‹</button><b>${cur.toLocaleString("en-US",{month:"long",year:"numeric"})}</b><button type="button" class="nx" aria-label="Next month">›</button></div><div class="sgrid">${["S","M","T","W","T","F","S"].map(x=>`<i>${x}</i>`).join("")}${g}</div><div class="stimes">${pickD?`<small>Times on ${new Date(pickD+"T12:00").toDateString()}</small>`+by[pickD].map(t=>`<button type="button" class="tm${t==pickT?" on":""}" data-t="${t}">${t} ET</button>`).join(""):'<small>Pick a highlighted day to see open times.</small>'}</div></div>`;
+  el.innerHTML=`<div class="scal"><div class="schd"><button type="button" class="pv" aria-label="Previous month">‹</button><b>${cur.toLocaleString("en-US",{month:"long",year:"numeric"})}</b><button type="button" class="nx" aria-label="Next month">›</button></div><div class="sgrid">${["S","M","T","W","T","F","S"].map(x=>`<i>${x}</i>`).join("")}${g}</div><div class="stimes">${pickD?`<small>Times on ${new Date(pickD+"T12:00").toDateString()}</small>`+by[pickD].map(t=>`<button type="button" class="tm${t==pickT?" on":""}" data-t="${t}">${fmtT(t)}</button>`).join(""):'<small>Pick a highlighted day to see open times.</small>'}</div></div>`;
   el.querySelector(".pv").onclick=()=>{cur.setMonth(cur.getMonth()-1);draw()};el.querySelector(".nx").onclick=()=>{cur.setMonth(cur.getMonth()+1);draw()};
-  el.querySelectorAll(".av").forEach(b=>b.onclick=()=>{pickD=b.dataset.d;pickT=by[pickD].length==1?by[pickD][0]:null;draw();onPick(pickT?pickD+" "+pickT+" ET":null)});
-  el.querySelectorAll(".tm").forEach(b=>b.onclick=()=>{pickT=b.dataset.t;draw();onPick(pickD+" "+pickT+" ET")})};draw()}
+  el.querySelectorAll(".av").forEach(b=>b.onclick=()=>{pickD=b.dataset.d;pickT=by[pickD].length==1?by[pickD][0]:null;draw();onPick(pickT?pickD+" "+fmtT(pickT):null)});
+  el.querySelectorAll(".tm").forEach(b=>b.onclick=()=>{pickT=b.dataset.t;draw();onPick(pickD+" "+fmtT(pickT))})};draw()}
 const notesBox=()=>`<label class="notes">What do you hope to get out of it? <span class="mut">(optional)</span><textarea id="snotes" maxlength="500" rows="3" placeholder="Goals, questions or anything the leader should know"></textarea><small class="cnt500"><span>0</span>/500</small></label>`;
 function wireNotes(m){const t=m.querySelector("#snotes");if(t)t.oninput=()=>m.querySelector(".cnt500 span").textContent=t.value.length}
 function sessionModal(id,register){const s=SESSIONS.find(x=>x.id==id);if(!s)return;const acc=ACCENTS[s.t]||"#0276B1";const r=regd().includes(s.id);
  const showSlots=s.f=="Workshop"&&register&&!r;
- const action=r?`<button class="btn sm ghost" type="button" id="cancelBtn">Cancel registration</button>`:register?(s.f=="Workshop"?`<button class="btn" id="goBtn" disabled>Confirm registration</button>`:`<button class="btn" id="goBtn">Register for ${fmtD(s.d).replace("<br>"," ")} · ${s.tm} ET</button>`):`<button class="btn" id="goBtn" data-open="1">${s.f=="Workshop"?"Schedule a time":"Register"}</button>`;
+ const action=r?`<button class="btn sm ghost" type="button" id="cancelBtn">Cancel registration</button>`:register?(s.f=="Workshop"?`<button class="btn" id="goBtn" disabled>Confirm registration</button>`:`<button class="btn" id="goBtn">Register for ${fmtD(s.d).replace("<br>"," ")} · ${fmtT(s.tm)}</button>`):`<button class="btn" id="goBtn" data-open="1">${s.f=="Workshop"?"Schedule a time":"Register"}</button>`;
  const m=modal(`<div style="border-top:5px solid ${acc};margin:-22px -22px 16px;border-radius:${10}px ${10}px 0 0;height:5px"></div>${register&&!r?'<div class="mgrid"><div class="mcol">':""}<span class="tag">${s.t}</span><span class="tag">${s.f}</span><h3 style="margin-top:8px">${s.n}</h3>
- <p class="mut"><b>Led by</b> ${s.v}</p><p>${s.ds||""}</p><p><b>What you'll get:</b> ${s.gl||""}</p><p class="mut">${s.f=="Webinar"?`${new Date(s.d+"T12:00").toDateString()} · ${s.tm} ET${s.m?" · "+s.m:""} · fixed time`:"Workshop · pick a day and time that works for you"}</p>
+ <p class="mut"><b>Led by</b> ${s.v}</p><p>${s.ds||""}</p><p><b>What you'll get:</b> ${s.gl||""}</p><p class="mut">${s.f=="Webinar"?`${new Date(s.d+"T12:00").toDateString()} · ${fmtT(s.tm)}${s.m?" · "+s.m:""} · fixed time`:"Workshop · pick a day and time that works for you"}</p>
  ${register&&!r?'</div><div class="mcol">':""}${showSlots?'<div id="slotCal"></div>':""}${register&&!r?notesBox():""}<div style="margin-top:14px">${action}</div><div class="ok"></div>${register&&!r?"</div></div>":""}`);
- let picked=null;if(showSlots)slotCal(m.querySelector("#slotCal"),SLOTS[s.id]||[s.d+" "+s.tm+" ET"],v=>{picked=v;const g=m.querySelector("#goBtn");g.disabled=!v;g.textContent=v?"Confirm "+v.replace(/^(\d+)-(\d+)-(\d+)/,(x,y,mo,d)=>new Date(x+"T12:00").toDateString().slice(0,10)):"Confirm registration"});wireNotes(m);
+ let picked=null;if(showSlots)slotCal(m.querySelector("#slotCal"),SLOTS[s.id]||[s.d+" "+s.tm],v=>{picked=v;const g=m.querySelector("#goBtn");g.disabled=!v;g.textContent=v?"Confirm "+v.replace(/^(\d+)-(\d+)-(\d+)/,(x,y,mo,d)=>new Date(x+"T12:00").toDateString().slice(0,10)):"Confirm registration"});wireNotes(m);
  const close=()=>{m.style.display="none"};
  const gb=m.querySelector("#goBtn");if(gb)gb.onclick=()=>{if(gb.dataset.open){close();sessionModal(s.id,true);return}toggleReg(s.id);m.querySelector(".ok").innerHTML=`<b>${s.f=="Workshop"?"Registered for "+(picked||s.d):"Registered"}.</b> We'll send a confirmation email. (Prototype: nothing was sent.)`;m.querySelector(".ok").style.display="block";gb.style.display="none";const sc=m.querySelector("#slotCal");if(sc)sc.style.display="none";const nt=m.querySelector(".notes");if(nt)nt.style.display="none";if(typeof ren=="function")ren()};
  const cb=m.querySelector("#cancelBtn");if(cb)cb.onclick=()=>{toggleReg(s.id);close();if(typeof ren=="function")ren()}}
