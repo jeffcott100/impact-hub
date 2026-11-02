@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit profile · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=15"></head>
-<body class="app"><script src="data.js?v=15"></script><script src="portal.js?v=15"></script><main class="wrap">
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Edit profile · Impact Hub Member Portal</title><link rel="stylesheet" href="styles.css?v=16"></head>
+<body class="app"><script src="data.js?v=16"></script><script src="portal.js?v=16"></script><main class="wrap">
 <div class="pagehead uni"><div><h1>Edit business profile</h1><p>Used to recommend workshops, funding and accelerators for you across the portal.</p></div><a class="btn ghost" href="app-home.html">Back to dashboard</a></div>
 <div class="pfpage"><form class="f" id="pfm"></form><div class="ok" id="pok"><b>Saved.</b> Recommendations across the portal are updated. <a href="app-grants.html">See recommended funding</a></div></div>
 <script>
@@ -8,4 +8,4 @@ function pageInit(){const p=getProfile();pfm.innerHTML=profileFields(p)+`<div cl
 pageInit();pfm.classList.add("pform");
 pfm.onsubmit=e=>{e.preventDefault();saveProfile(readProfile(pfm));pok.style.display="block";pok.scrollIntoView({block:"nearest"})};
 </script>
-</main><script src="chrome.js?v=15"></script></body></html>
+</main><script src="chrome.js?v=16"></script></body></html>

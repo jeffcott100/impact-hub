@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
-  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Small Business Impact Hub</title><link rel="stylesheet" href="styles.css?v=15"></head>
-<body class="home"><script src="data.js?v=15"></script><script src="usmap.js"></script><script src="home.js?v=15"></script>
+  <meta name="robots" content="noindex, nofollow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Home · Small Business Impact Hub</title><link rel="stylesheet" href="styles.css?v=16"></head>
+<body class="home"><script src="data.js?v=16"></script><script src="usmap.js"></script><script src="home.js?v=16"></script>
 <div class="hero photo" style="background-image:linear-gradient(90deg,rgba(1,61,91,.94) 0%,rgba(1,61,91,.78) 45%,rgba(1,61,91,.15) 100%),url(img/hero.jpg)"><div class="wrap">
 <span class="eyebrow">Small Business Impact Hub · by 100th Street Bank</span>
 <h1>Helping small business owners and entrepreneurs succeed.</h1><p>We support small businesses with the resources, expertise, and connections they need to grow by directly partnering with local business incubators and accelerators.</p>
@@ -27,7 +27,7 @@
 <div class="collage"><img src="img/collage/c1.jpg" alt="Small business owner in the network"><img src="img/collage/c2.jpg" alt="Small business owner in the network"><img src="img/collage/c3.jpg" alt="Small business owner in the network"><img src="img/collage/c4.jpg" alt="Small business owner in the network"><img src="img/collage/c5.jpg" alt="Small business owner in the network"><img src="img/collage/c6.jpg" alt="Small business owner in the network"></div></div></section>
 <section id="become"><div class="wrap"><div class="interest" id="apply"><div class="ihead"><h2>Tell us about your program</h2><p>Share a few details and our team will reach out to discuss collaboration.</p></div>
 <form class="f iform"><label>Organization<input required></label><label>Your name<input required></label><label>Email<input type="email" required></label><label>Website<input type="url" required placeholder="https://"></label>
-<label>State<select required id="fst"><option value="">Select a state</option></select></label><label>City<input required></label><label>Program type<select><option>Accelerator</option><option>CDFI</option><option>Incubator</option><option>Other</option><option>University program</option></select></label><label>Businesses served per year<select><option>Under 25</option><option>25–100</option><option>100+</option></select></label>
+<label>State<select required id="fst"><option value="">Select a state</option></select></label><label>City<input required></label><label>Program type<select><option>Accelerator</option><option>CDFI</option><option>Incubator</option><option>Other</option><option>University program</option></select></label><label>Businesses served per year<select><option>100+</option><option>25–100</option><option>Under 25</option></select></label>
 <button class="btn">Send</button></form><div class="ok"><b>Thanks.</b> Someone from our partnerships team will be in touch within two weeks. (Prototype: nothing was sent.)</div></div></div></section>
 
 <section class="fullw" id="benefits"><div class="wrap"><h2>How incubator/accelerator-affiliated small businesses benefit</h2><div class="grid bens">
@@ -56,7 +56,7 @@
 <script>drawMap();renderTesti(testi);</script>
 <script>
 const ALLST=Object.values(ST_ABBR).sort(),PST=new Set(PROGRAMS.map(p=>p.s)),SEL=[];let hi=0;
-ALLST.forEach(x=>fst.innerHTML+=`<option>${x}</option>`);
+[...ALLST].sort().forEach(x=>fst.innerHTML+=`<option>${x}</option>`);
 //netline.textContent=`The network today: ${PROGRAMS.filter(p=>/Incubator|Accelerator/.test(p.t)).length} incubators and accelerators serving 340 businesses.`;
 function chips(){stchips.innerHTML=SEL.map(x=>`<span class="chip">${x}<button aria-label="Remove ${x}" data-s="${x}">×</button></span>`).join("");stchips.querySelectorAll("button").forEach(b=>b.onclick=()=>{SEL.splice(SEL.indexOf(b.dataset.s),1);chips();ren()});stin.placeholder=SEL.length?"Add another":"Add a state"}
 function sug(){const v=stin.value.trim().toLowerCase();if(!v){stsug.innerHTML="";return}const L=ALLST.filter(x=>!SEL.includes(x)&&x.toLowerCase().startsWith(v)).concat(ALLST.filter(x=>!SEL.includes(x)&&!x.toLowerCase().startsWith(v)&&x.toLowerCase().includes(v))).slice(0,8);hi=0;
@@ -65,7 +65,7 @@ function add(x){if(x&&!SEL.includes(x))SEL.push(x);stin.value="";stsug.innerHTML
 stin.oninput=sug;stin.onblur=()=>setTimeout(()=>stsug.innerHTML="",100);
 stin.onkeydown=e=>{const li=[...stsug.querySelectorAll("li")];if(e.key=="ArrowDown"||e.key=="ArrowUp"){e.preventDefault();if(!li.length)return;hi=(hi+(e.key=="ArrowDown"?1:-1)+li.length)%li.length;li.forEach((l,i)=>l.classList.toggle("hi",i==hi))}else if(e.key=="Enter"){e.preventDefault();if(li[hi])add(li[hi].dataset.s)}else if(e.key=="Backspace"&&!stin.value&&SEL.length){SEL.pop();chips();ren()}};
 stp.onclick=e=>{if(e.target==stp||e.target==stchips)stin.focus()};
-PCATS.forEach(c=>pcat.innerHTML+=`<option>${c}</option>`);let pall=false;
+[...PCATS].sort().forEach(c=>pcat.innerHTML+=`<option>${c}</option>`);let pall=false;
 function ren(){const k=q.value.toLowerCase(),ct=pcat.value;const L=PROGRAMS.filter(p=>(!k||[p.n,p.p,p.d,p.t,p.c,p.s,p.k].join(" ").toLowerCase().includes(k))&&(!SEL.length||SEL.includes(p.s))&&(!ct||p.k==ct));
 cnt.textContent=`${L.length} program${L.length==1?"":"s"}${ct?" · "+ct:""}${SEL.length?" in "+SEL.join(", "):""}`;
 const V=pall?L:L.slice(0,6);pmorew.hidden=L.length<=6;pmore.textContent=pall?"Show fewer programs":`Show all ${L.length} programs`;pmore.setAttribute("aria-expanded",pall);
@@ -81,4 +81,4 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return
 document.querySelectorAll(".cnt").forEach(el=>io.observe(el));
 morebtn.onclick=()=>{const open=moreprs.hidden;moreprs.hidden=!open;morebtn.setAttribute("aria-expanded",open);morebtn.textContent=open?"Show fewer stories":"More stories";if(!open)document.getElementById("stories").scrollIntoView({behavior:"smooth"})};
 </script>
-<script src="chrome.js?v=15"></script></body></html>
+<script src="chrome.js?v=16"></script></body></html>

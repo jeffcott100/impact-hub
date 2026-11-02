@@ -1,3 +1,4 @@
+const AZ=l=>[...l].sort((a,b)=>String(a).localeCompare(String(b),undefined,{numeric:true}));
 // Member portal data. All fictional.
 // Company profile drives the whole portal (welcome, recommendations, page config). Created on first login.
 const DEMO_PROFILE={owner:"Danielle",biz:"Harbor & Vine Catering",industry:"Food, beverage & hospitality",zip:"23220",city:"Richmond",state:"Virginia",employees:6,revenue:"$500K–$2M",years:3,gender:"",race:"",military:""};
@@ -23,7 +24,7 @@ const REVS=["Under $100K","$100K–$500K","$500K–$2M","Over $2M"];
 const GENDERS=["Woman","Man","Non-binary","Prefer to self-describe","Prefer not to say"];
 const RACES=["American Indian or Alaska Native","Asian","Black or African American","Hispanic or Latino","Middle Eastern or North African","Native Hawaiian or Pacific Islander","White","Multiracial","Prefer not to say"];
 const MILS=["No military affiliation","Veteran","Active duty","National Guard / Reserve","Military spouse","Prefer not to say"];
-const sel=(name,list,v,blank)=>`<select name="${name}">${blank?`<option value="">${blank}</option>`:""}${list.map(i=>`<option ${i==v?"selected":""}>${i}</option>`).join("")}</select>`;
+const sel=(name,list,v,blank)=>`<select name="${name}">${blank?`<option value="">${blank}</option>`:""}${AZ(list).map(i=>`<option ${i==v?"selected":""}>${i}</option>`).join("")}</select>`;
 // Shared profile form (used by Edit profile and first-login onboarding).
 function profileFields(p){return `<label>Your name<input name="owner" value="${p.owner||""}" required autocomplete="name"></label>
 <label>Business name<input name="biz" value="${p.biz||""}" required></label>
@@ -107,7 +108,7 @@ const LS={get:(k,d)=>JSON.parse(localStorage.getItem("ih_"+k)||JSON.stringify(d)
 function regd(){return LS.get("reg",[])}
 function toggleReg(id){let r=regd();r=r.includes(id)?r.filter(x=>x!=id):[...r,id];LS.set("reg",r);return r.includes(id)}
 function fmtD(d){const x=new Date(d+"T12:00");return x.toLocaleString("en-US",{month:"short"})+"<br>"+x.getDate()}
-function opts(sel,label,list){sel.innerHTML=`<option value="">${label}: all</option>`+list.map(x=>`<option>${x}</option>`).join("")}
+function opts(sel,label,list){sel.innerHTML=`<option value="">${label}: all</option>`+AZ(list).map(x=>`<option>${x}</option>`).join("")}
 function modal(html){let m=document.getElementById("mdl");if(!m){m=document.createElement("div");m.id="mdl";m.className="modal";m.onclick=e=>{if(e.target==m)m.style.display="none"};document.body.append(m)}
  m.classList.toggle("wide",/class="mgrid"/.test(html));m.innerHTML=`<div>${html}</div>`;m.style.display="grid";return m}
 
