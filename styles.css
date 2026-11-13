@@ -445,3 +445,6 @@ select option{padding-right:20px}
 .ihdots{display:flex;gap:8px;margin-bottom:18px}.ihdots i{width:9px;height:9px;border-radius:50%;background:var(--g2)}.ihdots i.on{background:var(--blue)}
 .ihnav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.ihr{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 @media(max-width:520px){.ihbox{padding:26px 20px 20px}.ihbox h2{font-size:1.25rem}.ihnav{flex-direction:column-reverse;align-items:stretch}.ihr{flex-direction:column-reverse}.ihnav .btn{width:100%}.ihback[style*=hidden]{display:none}}
+.ihhl{position:relative;z-index:10001;outline:3px solid #fff;outline-offset:3px;box-shadow:0 0 0 7px #ffb400;border-radius:8px;background:#fff;animation:ihpulse 1.4s ease-in-out infinite}
+header.top:has(.ihhl){z-index:10000}
+@keyframes ihpulse{50%{box-shadow:0 0 0 11px #ffb40088}}
