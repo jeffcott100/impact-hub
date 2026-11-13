@@ -12,22 +12,22 @@ const ME={get biz(){return getProfile().biz},get owner(){return getProfile().own
 const ZIPS={"23220":["Richmond","Virginia"],"75201":["Dallas","Texas"],"75204":["Dallas","Texas"],"77002":["Houston","Texas"],"02116":["Boston","Massachusetts"],"02108":["Boston","Massachusetts"],"02119":["Boston","Massachusetts"],"02139":["Cambridge","Massachusetts"],"75202":["Dallas","Texas"],"75203":["Dallas","Texas"],"75215":["Dallas","Texas"],"78701":["Austin","Texas"],"90012":["Los Angeles","California"],"33101":["Miami","Florida"],"85004":["Phoenix","Arizona"],"23219":["Richmond","Virginia"],"23223":["Richmond","Virginia"],"02118":["Boston","Massachusetts"],"10001":["New York","New York"],"11201":["Brooklyn","New York"],"20001":["Washington","District of Columbia"],"70112":["New Orleans","Louisiana"],"60601":["Chicago","Illinois"],"53202":["Milwaukee","Wisconsin"],"94110":["San Francisco","California"],"80302":["Boulder","Colorado"],"07302":["Jersey City","New Jersey"],"19801":["Wilmington","Delaware"],"30303":["Atlanta","Georgia"],"98101":["Seattle","Washington"]};
 async function zipLookup(z){if(ZIPS[z])return ZIPS[z];try{const r=await fetch("https://api.zippopotam.us/us/"+z);if(!r.ok)return null;const j=await r.json();const pl=j.places&&j.places[0];return pl?[pl["place name"],pl["state"]]:null}catch(e){return null}}
 function industryMatch(profIndustry,itemIndustry){if(!itemIndustry)return false;return Array.isArray(itemIndustry)?itemIndustry.includes(profIndustry):itemIndustry===profIndustry}
-function itemStates(item){if(item.st&&Array.isArray(item.st))return item.st;const loc=(item.org||"")+" "+(item.c||"");const m=loc.match(/,\s*([A-Z]{2})\b/);return m&&ST_ABBR[m[1]]?[ST_ABBR[m[1]]]:[]}
+function itemStates(item){if(item.geo)return item.geo=="ALL"?Object.values(ST_ABBR):item.geo;if(item.st=="ALL")return Object.values(ST_ABBR);if(item.st&&Array.isArray(item.st))return item.st;const loc=(item.org||"")+" "+(item.c||"");const m=loc.match(/,\s*([A-Z]{2})\b/);return m&&ST_ABBR[m[1]]?[ST_ABBR[m[1]]]:[]}
 function recScore(prof,item){let sc=0;const txt=((item.who||"")+" "+(item.n||"")).toLowerCase();
  if(item.k&&industryMatch(prof.industry,item.k))sc+=2;else if(prof.industry&&txt.includes(prof.industry.split(/[ ,]/)[0].toLowerCase()))sc+=1;
- if(prof.state&&itemStates(item).includes(prof.state))sc+=2;else if(item.m&&item.m==STATE_DIV[prof.state])sc+=1;
+ if(prof.state&&item.geo!="ALL"&&item.st!="ALL"&&itemStates(item).includes(prof.state))sc+=2;else if(item.m&&item.m==STATE_DIV[prof.state])sc+=1;
  if(prof.gender=="Woman"&&/women/.test(txt))sc+=2;if(prof.race=="Black or African American"&&/black/.test(txt))sc+=2;if(prof.race=="Hispanic or Latino"&&/latin/.test(txt))sc+=2;if(prof.military&&prof.military!="No military affiliation"&&/veteran|military/.test(txt))sc+=2;
- if(prof.city&&((item.who||"")+" "+(item.n||"")+" "+(item.org||"")+" "+(item.c||"")).includes(prof.city))sc+=1;
+ if(idTags(item).some(([,,ok])=>ok(prof)))sc+=2;if(prof.city&&((item.who||"")+" "+(item.n||"")+" "+(item.org||"")+" "+(item.c||"")).includes(prof.city))sc+=1;
  return sc}
 // Recommendation eligibility: must match geography AND industry; software & nonprofit programs are geography-agnostic; items with u0:1 are open to everyone.
 const GEO_FREE=["Technology & software","Nonprofit & social enterprise"];
-const IDS=[["black",/black/,p=>p.race=="Black or African American"],["latino",/latin|hispanic/,p=>p.race=="Hispanic or Latino"],["asian",/\basian/,p=>p.race=="Asian"],["native",/native|indigenous|tribal/,p=>/Native|Indian/.test(p.race||"")],["women",/women|woman/,p=>p.gender=="Woman"],["veteran",/veteran|military/,p=>p.military&&!/No military|Prefer not/.test(p.military)]];
-function idTags(item){const t=((item.who||"")+" "+(item.n||"")+" "+(item.org||"")).toLowerCase();return IDS.filter(([,re])=>re.test(t))}
+const IDS=[["black",/black/,p=>p.race=="Black or African American"],["latino",/latin|hispanic/,p=>p.race=="Hispanic or Latino"],["asian",/\basian/,p=>p.race=="Asian"],["native",/american indian|alaska native|indigenous|tribal/,p=>/Indian/.test(p.race||"")],["nhpi",/native hawaiian|pacific islander/,p=>/Hawaiian|Asian/.test(p.race||"")],["mena",/arab|middle eastern|\bmena\b/,p=>/Middle Eastern/.test(p.race||"")],["lgbtq",/lgbt/,p=>/Non-binary|self-describe/.test(p.gender||"")],["women",/women|woman/,p=>p.gender=="Woman"],["veteran",/veteran|military/,p=>p.military&&!/No military|Prefer not/.test(p.military)]];
+function idTags(item){if(item.id)return IDS.filter(([k])=>item.id.includes(k));const t=((item.who||"")+" "+(item.n||"")+" "+(item.org||"")).toLowerCase();return IDS.filter(([,re])=>re.test(t))}
 function isEligible(prof,item){if(item.u0)return true;
  const ids=idTags(item);if(ids.length){const none=!prof.race&&!prof.gender&&!prof.military;if(!none&&!ids.some(([,,ok])=>ok(prof)))return false}
  const ks=[].concat(item.k||[]);if(ks.length&&!ks.includes(prof.industry))return false;
  if(ks.some(k=>GEO_FREE.includes(k)))return true;
- if(item.st=="ALL")return true;const sts=itemStates(item);return !!prof.state&&sts.includes(prof.state)}
+ if(item.st=="ALL"||item.geo=="ALL")return true;const sts=itemStates(item);return !!prof.state&&sts.includes(prof.state)}
 function sortRecommended(list,prof){return [...list].sort((a,b)=>(isEligible(prof,b)-isEligible(prof,a))||(recScore(prof,b)-recScore(prof,a)))}
 function recommended(list,prof){return sortRecommended(list.filter(x=>isEligible(prof,x)),prof)}
 // Times: source times are Eastern; shown in the member's local zone (from profile ZIP/state), 12-hour am/pm.
@@ -97,7 +97,7 @@ const ACCS=[
 {n:"The DEC Network",l:"img/logos/dec.png",org:"Dallas Small Business Accelerator, with UT Dallas",m:"West South Central",st:"Early stage",len:"12 weeks",src:"ACC",u:"https://thedec.co/"},
 {n:"UT Dallas Innovation & Entrepreneurship",l:"img/logos/utd.svg",org:"CometX Accelerator, Richardson, TX",m:"West South Central",st:"Idea / early stage",len:"University accelerator",u:"https://innovation.utdallas.edu/cometx-accelerator/"},
 {n:"Union Kitchen Accelerator",w:"Union Kitchen",org:"Union Kitchen, Washington, DC",m:"South Atlantic",st:"Early",len:"180 days, in person, rolling admission",src:"RVA",u:"https://www.unionkitchen.com/"},
-{n:"Latino Business Action Network (LBAN)",u0:1,w:"LBAN",org:"LBAN Scaling Program with Stanford GSB faculty, Stanford, CA",m:"Pacific",st:"Growth",len:"Nine weeks, two tracks",u:"https://www.lban.us/programs/business-scaling-program/"},
+{n:"Latino Business Action Network (LBAN)",u0:1,w:"LBAN",org:"LBAN Scaling Program with Stanford GSB faculty, Stanford, CA",m:"Pacific",st:"Growth",len:"Nine weeks, two tracks",u:"https://www.lban.us/"},
 {n:"Halcyon",l:"img/logos/halcyon.png",org:"Impact-driven startup accelerator, Washington, DC",m:"South Atlantic",st:"Early stage",len:"Programs since 2014",u:"https://halcyonaccelerator.org/programs/"},
 {n:"Propeller",w:"PROP",org:"Impact Accelerator, New Orleans, LA",m:"West South Central",st:"Early stage",len:"Cohort accelerator",u:"https://gopropeller.org/impact-accelerator/"},
 {n:"Rising Tide Capital",w:"RTC",org:"Community Business Academy, Jersey City, NJ",m:"Middle Atlantic",st:"Idea / early stage",len:"Business training + coaching",u:"https://programs.risingtidecapital.org/community-business-academy/"},
@@ -124,6 +124,74 @@ const PERKS=[
 {n:"Slack",l:"img/logos/slack.svg",o:"Member discount on team messaging for growing staff",sv:"25% off Pro for 12 months",c:"Communication"},
 {n:"Microsoft 365 Business",l:"img/logos/m365.svg",o:"Member discount on Outlook, Teams, Word and Excel",sv:"$150 in credits",c:"Productivity"},
 {n:"Docusign",l:"img/logos/docusign.svg",o:"Member discount on e-signatures for contracts and invoices",sv:"30% off for 6 months",c:"Operations"}];
+// Region map (8 Hub regions) so every state gets region-specific programs.
+const HUB_REGION={"Northeast":["Connecticut","Maine","Massachusetts","New Hampshire","New Jersey","New York","Pennsylvania","Rhode Island","Vermont"],"Mid-Atlantic":["Delaware","District of Columbia","Maryland","Virginia","West Virginia"],"Southeast":["Alabama","Florida","Georgia","Kentucky","Mississippi","North Carolina","South Carolina","Tennessee"],"Midwest":["Illinois","Indiana","Iowa","Kansas","Michigan","Minnesota","Missouri","Nebraska","North Dakota","Ohio","South Dakota","Wisconsin"],"South / Texas":["Arkansas","Louisiana","Oklahoma","Texas"],"Mountain West":["Arizona","Colorado","Idaho","Montana","Nevada","New Mexico","Utah","Wyoming"],"California / West Coast":["California","Hawaii","Nevada"],"Pacific Northwest":["Alaska","Idaho","Oregon","Washington"]};
+const RG=r=>HUB_REGION[r];
+// Demographic funding (real organizations; id = identity tag used for eligibility).
+GRANTS.push(
+{u:"https://ambergrantsforwomen.com/",st:"ALL",w:"AG",id:["women"],n:"Amber Grant for Women",a:"$10,000 monthly + $25,000 annual",m:"National",who:"Women-owned businesses, any stage",type:"Grant"},
+{u:"https://startup.google.com/programs/black-founders-fund/",st:"ALL",w:"GFS",id:["black"],n:"Google for Startups Black Founders Fund",a:"Non-dilutive awards + Google support",m:"National",who:"Black-led startups",type:"Grant"},
+{u:"https://startup.google.com/programs/latino-founders-fund/",st:"ALL",w:"GFS",id:["latino"],n:"Google for Startups Latino Founders Fund",a:"Non-dilutive awards + Google support",m:"National",who:"Latino-led startups",type:"Grant"},
+{u:"https://www.oweesta.org/",st:"ALL",w:"OWC",id:["native"],n:"Oweesta Corporation Native CDFI capital",a:"Loans via Native CDFIs",m:"National",who:"American Indian and Alaska Native entrepreneurs, through Native CDFIs",type:"Loan"},
+{u:"https://www.oha.org/",st:["Hawaii"],w:"OHA",id:["nhpi"],n:"OHA Mālama Business Loans",a:"Low-interest business loans",m:"Pacific",who:"Native Hawaiian-owned businesses",type:"Loan"},
+{u:"https://www.nationalace.org/",st:"ALL",w:"ACE",id:["asian","nhpi"],n:"National ACE Asian American and Pacific Islander business support",a:"Capital access, contracting and grants",m:"National",who:"Asian American and Pacific Islander business owners",type:"Grant"},
+{u:"https://www.hiversandstrivers.com/",st:"ALL",w:"H&S",id:["veteran"],n:"Hivers & Strivers veteran founder investment",a:"Early-stage angel investment",m:"National",who:"Startups founded by U.S. military veterans",type:"Competition"},
+// Regional funding.
+{u:"https://www.pursuitlending.com/",st:["Connecticut","Massachusetts","New Jersey","New York","Pennsylvania"],w:"PUR",n:"Pursuit small business loans",a:"SBA and community loans",m:"Middle Atlantic",who:"Small businesses in New York, New Jersey, Pennsylvania and New England",type:"Loan"},
+{u:"https://wacif.org/",st:["District of Columbia","Maryland","Virginia"],w:"WAC",n:"WACIF small business capital",a:"Loans + coaching",m:"South Atlantic",who:"DC, Maryland and Virginia entrepreneurs",type:"Loan"},
+{u:"https://www.liftfund.com/",st:["Alabama","Arkansas","Florida","Georgia","Louisiana","Mississippi","Oklahoma","Tennessee","Texas"],w:"LF",n:"LiftFund small business loans",a:"$500–$250,000+",m:"West South Central",who:"Texas and southern-state small businesses that struggle to get bank credit",type:"Loan"},
+{u:"https://aceloans.org/",st:["Georgia"],w:"ACE",n:"Access to Capital for Entrepreneurs (ACE) loans",a:"Microloans and SBA loans",m:"South Atlantic",who:"Georgia small businesses, focus on underserved owners",type:"Loan"},
+{u:"https://a4cb.org/",st:["Illinois","Indiana"],w:"A4CB",n:"Allies for Community Business microloans",a:"$500–$100,000",m:"East North Central",who:"Chicago-area and Midwest small businesses",type:"Loan"},
+{u:"https://coloradoenterprisefund.org/",st:["Colorado"],w:"CEF",n:"Colorado Enterprise Fund loans",a:"Up to $1M",m:"Mountain",who:"Colorado small businesses",type:"Loan"},
+{u:"https://dreamspring.org/",st:["Arizona","Colorado","Nevada","New Mexico","Texas","Utah"],w:"DS",n:"DreamSpring small business loans",a:"$500–$100,000",m:"Mountain",who:"Mountain West and Southwest small businesses",type:"Loan"},
+{u:"https://cdcloans.com/",st:["Arizona","California","Nevada"],w:"CDC",n:"CDC Small Business Finance loans",a:"SBA 504, 7(a) and microloans",m:"Pacific",who:"California, Arizona and Nevada small businesses",type:"Loan"},
+{u:"https://www.craft3.org/",st:["Oregon","Washington"],w:"C3",n:"Craft3 business loans",a:"Flexible community loans",m:"Pacific",who:"Oregon and Washington businesses",type:"Loan"});
+// Demographic and regional programs (geo = states served).
+ACCS.push(
+{n:"Tory Burch Foundation Fellows",w:"TBF",id:["women"],geo:"ALL",org:"Year-long fellowship for women founders, national",m:"National",st:"Growth",len:"One year + $5,000 education grant",u:"https://www.toryburchfoundation.org/fellows/"},
+{n:"Black Ambition",w:"BA",id:["black","latino"],geo:"ALL",org:"Pharrell Williams' prize and mentorship for Black and Hispanic founders, national",m:"National",st:"Early stage",len:"Prize competition + mentorship",u:"https://www.blackambitionprize.com/"},
+{n:"U.S. Hispanic Chamber of Commerce (USHCC)",w:"USH",id:["latino"],geo:"ALL",org:"Hispanic business programs and local chambers, national",m:"National",st:"All stages",len:"Training, contracting and network",u:"https://www.ushcc.com/"},
+{n:"NCAIED (National Center)",w:"NC",id:["native"],geo:"ALL",org:"American Indian and Alaska Native business development, national",m:"National",st:"All stages",len:"Procurement and business training",u:"https://www.ncaied.org/"},
+{n:"Council for Native Hawaiian Advancement",w:"CNHA",id:["nhpi"],geo:"ALL",org:"Native Hawaiian business and Pacific Islander programs, Honolulu, HI",m:"Pacific",st:"All stages",len:"Business training + capital access",u:"https://www.hawaiiancouncil.org/"},
+{n:"U.S. Pan Asian American Chamber of Commerce (USPAACC)",w:"USP",id:["asian","nhpi"],geo:"ALL",org:"Asian American and Pacific Islander business programs, national",m:"National",st:"Growth",len:"Contracting, mentoring and events",u:"https://uspaacc.com/"},
+{n:"American Arab Chamber of Commerce",w:"AACC",id:["mena"],geo:"ALL",org:"Arab American and MENA business programs, Dearborn, MI",m:"East North Central",st:"All stages",len:"Business support + network",u:"https://americanarab.com/"},
+{n:"ACCESS Growth",w:"ACC",id:["mena"],geo:"ALL",org:"Arab American-founded entrepreneurship programs, Dearborn, MI",m:"East North Central",st:"Idea / early stage",len:"Coaching, classes and microloans",u:"https://www.accesscommunity.org/"},
+{n:"Bunker Labs",w:"BL",id:["veteran"],geo:"ALL",org:"Veteran and military-spouse founder programs, national",m:"National",st:"Idea / early stage",len:"Veterans in Residence cohort",u:"https://bunkerlabs.org/"},
+{n:"SBA Boots to Business",w:"B2B",id:["veteran"],geo:"ALL",org:"SBA entrepreneurship training for service members, veterans and spouses, national",m:"National",st:"Idea stage",len:"Two-day course + online program",u:"https://www.sba.gov/sba-learning-platform/boots-business"},
+{n:"NGLCC",w:"NGL",id:["lgbtq"],geo:"ALL",org:"LGBT business certification and programs, national",m:"National",st:"All stages",len:"Certification + supplier diversity",u:"https://www.nglcc.org/"},
+{n:"America's SBDC",w:"SBDC",u0:1,geo:"ALL",org:"Free advising at your state's Small Business Development Center, national",m:"National",st:"All stages",len:"Free 1-on-1 advising",u:"https://americassbdc.org/"},
+// Regional programs.
+{n:"Delaware SBDC",w:"SBDC",geo:["Delaware"],org:"Free advising statewide, Newark, DE",m:"South Atlantic",st:"All stages",len:"Free 1-on-1 advising",u:"https://delawaresbdc.org/"},
+{n:"NJEDA",w:"NJE",geo:["New Jersey"],org:"New Jersey Economic Development Authority small business programs, Trenton, NJ",m:"Middle Atlantic",st:"All stages",len:"Grants, loans + programs",u:"https://www.njeda.gov/"},
+{n:"Coastal Enterprises (CEI)",w:"CEI",geo:["Maine","New Hampshire","Vermont"],org:"Business advising and lending, Brunswick, ME",m:"New England",st:"All stages",len:"Advising + loans",u:"https://www.ceimaine.org/"},
+{n:"West Virginia SBDC",w:"SBDC",geo:["West Virginia"],org:"Free advising statewide, Charleston, WV",m:"South Atlantic",st:"All stages",len:"Free 1-on-1 advising",u:"https://wvsbdc.com/"},
+{n:"Kentucky Highlands Investment Corp",w:"KHIC",geo:["Kentucky","Tennessee"],org:"Loans and advising, London, KY",m:"East South Central",st:"All stages",len:"Loans + advising",u:"https://khic.org/"},
+{n:"The Iowa Center for Economic Success",w:"ICES",geo:["Iowa"],org:"Classes, coaching and loans, Des Moines, IA",m:"West North Central",st:"Idea / early stage",len:"Coaching + microloans",u:"https://www.theiowacenter.org/"},
+{n:"Ewing Marion Kauffman Foundation",w:"EMKF",geo:["Kansas","Missouri"],org:"Entrepreneurship programs, Kansas City, MO",m:"West North Central",st:"All stages",len:"Programs + grants to support orgs",u:"https://www.kauffman.org/"},
+{n:"WESST",w:"WSST",geo:["New Mexico"],org:"Training, coaching and loans, Albuquerque, NM",m:"Mountain",st:"All stages",len:"Coaching + loans",u:"https://www.wesst.org/"},
+{n:"Utah SBDC",w:"SBDC",geo:["Utah"],org:"Free advising statewide, Utah, UT",m:"Mountain",st:"All stages",len:"Free 1-on-1 advising",u:"https://utahsbdc.org/"},
+{n:"Idaho SBDC",w:"SBDC",geo:["Idaho"],org:"Free advising statewide, Boise, ID",m:"Mountain",st:"All stages",len:"Free 1-on-1 advising",u:"https://idahosbdc.org/"},
+{n:"Hawaii SBDC",w:"SBDC",geo:["Hawaii"],org:"Free advising statewide, Hilo, HI",m:"Pacific",st:"All stages",len:"Free 1-on-1 advising",u:"https://www.hisbdc.org/"},
+{n:"Alaska SBDC",w:"SBDC",geo:["Alaska"],org:"Free advising statewide, Anchorage, AK",m:"Pacific",st:"All stages",len:"Free 1-on-1 advising",u:"https://aksbdc.org/"},
+{n:"MassChallenge",w:"MC",geo:["Connecticut","Maine","Massachusetts","New Hampshire","Rhode Island","Vermont"],org:"Zero-equity accelerator, Boston, MA",m:"New England",st:"Early stage",len:"Cohort accelerator",u:"https://masschallenge.org/"},
+{n:"Ben Franklin Technology Partners",w:"BFTP",geo:["Pennsylvania"],org:"Funding and support for Pennsylvania companies, PA",m:"Middle Atlantic",st:"Early stage",len:"Investment + programs",u:"https://benfranklin.org/"},
+{n:"NYC Small Business Services",w:"SBS",geo:["New York"],org:"Free business courses and services, New York, NY",m:"Middle Atlantic",st:"All stages",len:"Free courses + advising",u:"https://www.nyc.gov/site/sbs/businesses/businesses.page"},
+{n:"TEDCO",w:"TED",geo:["Maryland"],org:"Maryland innovation funding and programs, Columbia, MD",m:"South Atlantic",st:"Early stage",len:"Funding + entrepreneur programs",u:"https://www.tedcomd.com/"},
+{n:"Florida SBDC Network",w:"SBDC",geo:["Florida"],org:"Free consulting and training statewide, Florida, FL",m:"South Atlantic",st:"All stages",len:"Free consulting",u:"https://floridasbdc.org/"},
+{n:"Prospera",w:"PRO",geo:["Florida"],org:"Bilingual business assistance and grants, Miami, FL",m:"South Atlantic",st:"Early / growth",len:"Bilingual consulting",u:"https://prosperausa.org/"},
+{n:"Carolina Small Business Development Fund",w:"CSB",geo:["North Carolina","South Carolina"],org:"Lending and technical assistance, Raleigh, NC",m:"South Atlantic",st:"All stages",len:"Coaching + loans",u:"https://carolinasmallbusiness.org/"},
+{n:"gener8tor gBETA (Midwest cities)",w:"g8",geo:RG("Midwest"),org:"Free pre-accelerator in cities across the Midwest",m:"East North Central",st:"Idea / early stage",len:"Free 7-week program",u:"https://www.gener8tor.com/gbeta"},
+{n:"JumpStart",w:"JS",geo:["Ohio"],org:"Entrepreneur services and capital, Cleveland, OH",m:"East North Central",st:"Early / growth",len:"Advising + capital",u:"https://www.jumpstartinc.org/"},
+{n:"TechTown Detroit",w:"TT",geo:["Michigan"],org:"Small business and tech programs, Detroit, MI",m:"East North Central",st:"All stages",len:"Cohort programs",u:"https://techtowndetroit.org/"},
+{n:"Neighborhood Development Center",w:"NDC",geo:["Minnesota"],org:"Training, loans and real estate, St. Paul, MN",m:"West North Central",st:"Idea / early stage",len:"Entrepreneur training + loans",u:"https://www.ndc-mn.org/"},
+{n:"PeopleFund",w:"PF",geo:["Texas"],org:"Loans and business education, Austin, TX",m:"West South Central",st:"All stages",len:"Coaching + loans",u:"https://peoplefund.org/"},
+{n:"Startup Junkie",w:"SJ",geo:["Arkansas","Oklahoma"],org:"Free entrepreneur support, Fayetteville, AR",m:"West South Central",st:"Idea / early stage",len:"Free consulting + programs",u:"https://www.startupjunkie.org/"},
+{n:"Montana SBDC",w:"SBDC",geo:["Montana"],org:"Free advising statewide, Helena, MT",m:"Mountain",st:"All stages",len:"Free 1-on-1 advising",u:"https://sbdc.mt.gov/"},
+{n:"Wyoming SBDC Network",w:"SBDC",geo:["Wyoming"],org:"Free advising statewide, Laramie, WY",m:"Mountain",st:"All stages",len:"Free 1-on-1 advising",u:"https://www.wyomingsbdc.org/"},
+{n:"Pacific Community Ventures",w:"PCV",geo:["California"],org:"Free business advising, San Francisco, CA",m:"Pacific",st:"All stages",len:"Free 1-on-1 advising",u:"https://www.pacificcommunityventures.org/"},
+{n:"Renaissance Entrepreneurship Center",w:"REN",geo:["California"],org:"Training and incubation, San Francisco, CA",m:"Pacific",st:"Idea / early stage",len:"Courses + incubator",u:"https://www.rencenter.org/"},
+{n:"Business Impact NW",w:"BINW",geo:["Alaska","Oregon","Washington"],org:"Training and loans, Seattle, WA",m:"Pacific",st:"All stages",len:"Classes + loans",u:"https://businessimpactnw.org/"},
+{n:"Mercy Corps Northwest",w:"MC",geo:["Oregon","Washington"],org:"Small business classes and loans, Portland, OR",m:"Pacific",st:"Idea / early stage",len:"Classes + microloans",u:"https://www.mercycorpsnw.org/"});
 ACCS.forEach(a=>{const p=PROGRAMS.find(p=>p.n==a.n);if(p){a.k=p.k;if(p.l)a.l=p.l}});
 GRANTS.sort((a,b)=>a.n.localeCompare(b.n));ACCS.sort((a,b)=>a.n.localeCompare(b.n));PERKS.sort((a,b)=>a.n.localeCompare(b.n));
 const LS={get:(k,d)=>JSON.parse(localStorage.getItem("ih_"+k)||JSON.stringify(d)),set:(k,v)=>localStorage.setItem("ih_"+k,JSON.stringify(v))};
