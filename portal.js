@@ -204,3 +204,8 @@ function onboarding(){const m=modal(`<div class="onb"><span class="eyebrow dk">S
  const done=p=>{saveProfile(p);m.style.display="none";m.classList.remove("onbm");if(typeof pageInit=="function")pageInit();startTour(0)};
  onbf.onsubmit=e=>{e.preventDefault();done(readProfile(onbf))};onbdemo.onclick=()=>done(defaultProfile())}
 addEventListener("load",()=>{const fresh=!sessionStorage.getItem("ih_in");sessionStorage.setItem("ih_in","1");if(!hasProfile())onboarding();else if(fresh||new URLSearchParams(location.search).has("tour"))startTour(0)});
+// Perk relevance to the business profile: categories that matter most per industry, plus team size / stage.
+const IND_PERKS={"Food, beverage & hospitality":["Payroll","E-commerce","Accounting"],"Education & childcare":["Payroll","Operations","Communication"],"Health & life sciences":["Operations","Payroll","Accounting"],"Retail & consumer":["E-commerce","Marketing","Accounting"],"Technology & software":["AI","Communication","Productivity"],"Professional, financial & business services":["Marketing","Operations","AI"],"Construction & manufacturing":["Operations","Payroll","Accounting"],"Nonprofit & social enterprise":["Productivity","Marketing","Communication"]};
+function perkScore(p,k){let sc=0;const i=(IND_PERKS[p.industry]||[]).indexOf(k.c);if(i>=0)sc+=4-i;
+ if(p.employees>=5&&/Payroll|Communication/.test(k.c))sc+=1;if(p.years<=2&&/Accounting|Productivity/.test(k.c))sc+=1;return sc}
+function perksFor(p){return [...PERKS].sort((a,b)=>perkScore(p,b)-perkScore(p,a)||a.n.localeCompare(b.n))}
