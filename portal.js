@@ -23,8 +23,8 @@ function recScore(prof,item){let sc=0;const txt=((item.who||"")+" "+(item.n||"")
 const GEO_FREE=["Technology & software","Nonprofit & social enterprise"];
 const IDS=[["black",/black/,p=>p.race=="Black or African American"],["latino",/latin|hispanic/,p=>p.race=="Hispanic or Latino"],["asian",/\basian/,p=>p.race=="Asian"],["native",/american indian|alaska native|indigenous|tribal/,p=>/Indian/.test(p.race||"")],["nhpi",/native hawaiian|pacific islander/,p=>/Hawaiian|Asian/.test(p.race||"")],["mena",/arab|middle eastern|\bmena\b/,p=>/Middle Eastern/.test(p.race||"")],["lgbtq",/lgbt/,p=>/Non-binary|self-describe/.test(p.gender||"")],["women",/women|woman/,p=>p.gender=="Woman"],["veteran",/veteran|military/,p=>p.military&&!/No military|Prefer not/.test(p.military)]];
 function idTags(item){if(item.id)return IDS.filter(([k])=>item.id.includes(k));const t=((item.who||"")+" "+(item.n||"")+" "+(item.org||"")).toLowerCase();return IDS.filter(([,re])=>re.test(t))}
-function isEligible(prof,item){if(item.u0)return true;
- const ids=idTags(item);if(ids.length){const none=!prof.race&&!prof.gender&&!prof.military;if(!none&&!ids.some(([,,ok])=>ok(prof)))return false}
+function isEligible(prof,item){const ids=idTags(item);if(ids.length&&!ids.some(([,,ok])=>ok(prof)))return false;
+ if(item.u0)return true;
  const ks=[].concat(item.k||[]);if(ks.length&&!ks.includes(prof.industry))return false;
  if(ks.some(k=>GEO_FREE.includes(k)))return true;
  if(item.st=="ALL"||item.geo=="ALL")return true;const sts=itemStates(item);return !!prof.state&&sts.includes(prof.state)}
